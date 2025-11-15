@@ -1,252 +1,606 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>個人網站</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>貓貓燈具 — 商品展示</title>
+<meta name="description" content="貓貓燈具—專業燈具設計與販售：吊燈、壁燈、吸頂燈、投射燈、燈條、軌道燈。線上展示與會員系統、客服聯絡。" />
 <style>
-body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f7f7f7;
-    color: #333;
-}
-header {
-    background-color: #ffffff;
-    padding: 25px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-header h1 {
-    margin: 0;
-    font-size: 2.2em;
-}
-.container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-.section {
-    margin-bottom: 60px;
-}
-h2 {
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 10px;
-    margin-bottom: 25px;
-}
-/* 自動排版商品區 */
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    justify-items: center;
-}
-/* 商品卡片 */
-.product-card {
-    background-color: #fff;
-    width: 100%;
-    height: 400px;
-    perspective: 1000px;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: transform 0.3s;
-}
-.product-card:hover {
-    transform: translateY(-5px);
-}
-.card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-}
-.product-card:hover .card-inner {
-    transform: rotateY(180deg);
-}
-.card-front, .card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-}
-.card-front img {
-    width: 100%;
-    height: 60%;
-    object-fit: cover;
-}
-.card-front h3, .card-front p {
-    margin: 10px 15px;
-}
-.card-back {
-    background-color: #f0f0f0;
-    color: #333;
-    transform: rotateY(180deg);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-.card-back p {
-    margin-bottom: 20px;
-}
-.buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-.buttons a {
-    text-decoration: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    background: linear-gradient(135deg, #007BFF, #00C6FF);
-    color: #fff;
-    font-weight: bold;
-    transition: 0.3s;
-}
-.buttons a:hover {
-    background: linear-gradient(135deg, #0056b3, #0096c7);
-    transform: scale(1.05);
-}
-/* 聯絡區 */
-#contact p {
-    font-size: 1.1em;
-    margin: 8px 0;
-}
-footer {
-    text-align: center;
-    padding: 25px;
-    background-color: #eaeaea;
-    border-top: 1px solid #ddd;
-}
-/* 輪播 */
-.carousel {
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    margin: 0 auto 20px;
-    overflow: hidden;
-    border-radius: 10px;
-}
-.carousel img {
-    width: 100%;
-    display: none;
-}
-.carousel img.active {
-    display: block;
-}
-/* 手機響應 */
-@media (max-width: 600px) {
-    .product-card {
-        height: auto;
-    }
-    .card-front img, .card-back {
-        height: auto;
-    }
-    .buttons {
-        flex-direction: column;
-    }
-    .buttons a {
-        width: 100%;
-        text-align: center;
-    }
-}
+  :root{
+    --card-bg:#ffffff;
+    --muted:#6b6b6b;
+    --accent1:#0d6efd;
+    --accent2:#00b4d8;
+    --glass: rgba(255,255,255,0.85);
+    --maxw:1100px;
+  }
+  html,body{height:100%;margin:0;font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial; color:#222;}
+  /* Background image covering page */
+  body{
+    background-image: url('https://images.unsplash.com/photo-1493666438817-866a91353ca9?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=1a8a4a8a3f4c8c8c8c8c8c8c8c8c8c8');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+  /* overlay to improve readability */
+  .page-overlay{
+    min-height:100%;
+    background: linear-gradient(rgba(15,15,15,0.45), rgba(15,15,15,0.45));
+    padding: 32px 20px;
+    box-sizing:border-box;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+  }
+  .site {
+    width:100%;
+    max-width:var(--maxw);
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.88));
+    border-radius:12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    overflow:hidden;
+  }
+
+  /* Header */
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 24px;
+    gap:12px;
+  }
+  .brand {
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .logo {
+    width:56px;height:56px;border-radius:10px;
+    background: linear-gradient(135deg,var(--accent1),var(--accent2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:22px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  h1{font-size:20px;margin:0;}
+  .tag{color:var(--muted);font-size:13px;margin-top:4px;}
+
+  /* Top actions (login/register/contact) */
+  .top-actions{display:flex;gap:10px;align-items:center;}
+  .btn {
+    display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600;
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#fff;border:none;cursor:pointer;
+    box-shadow: 0 4px 12px rgba(13,110,253,0.12);
+  }
+  .btn.ghost{background:transparent;color:var(--accent1);border:1px solid rgba(13,110,253,0.12);box-shadow:none;}
+  .small{padding:6px 10px;font-size:14px;}
+
+  /* Layout */
+  .main {
+    display:grid;
+    grid-template-columns: 320px 1fr;
+    gap:18px;
+    padding:20px;
+  }
+
+  /* Left column: company intro + categories + contact */
+  .sidebar{
+    padding:18px;
+    background:var(--glass);
+    border-radius:10px;
+    height:fit-content;
+  }
+  .company-name{display:flex;align-items:center;gap:12px;}
+  .company-name h2{margin:0;font-size:18px;}
+  .intro{margin-top:12px;color:var(--muted);font-size:14px;line-height:1.5;}
+
+  .categories{margin-top:18px;}
+  .cat-list{display:flex;flex-direction:column;gap:8px;margin:8px 0 0;}
+  .cat-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,0.65);cursor:pointer;border:1px solid rgba(0,0,0,0.04);}
+  .cat-item.active{box-shadow:0 6px 18px rgba(0,0,0,0.08);border:1px solid rgba(13,110,253,0.15);}
+
+  .contact-box{margin-top:18px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.65);}
+  .contact-box p{margin:6px 0;color:var(--muted);font-size:14px;}
+  .contact-box a{color:var(--accent1);text-decoration:none;font-weight:600;}
+
+  /* Right column: products + search + registration form modal trigger */
+  .content{padding:18px;background:transparent;}
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .search{
+    flex:1;min-width:200px;
+    display:flex;gap:8px;align-items:center;
+  }
+  .search input{
+    width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:#fff;
+  }
+
+  /* product grid */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+    gap:16px;
+  }
+  .card{
+    background:var(--card-bg);
+    border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,0.04);
+    display:flex;flex-direction:column;height:100%;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+  .card .photo{width:100%;height:160px;object-fit:cover;background:#eee;}
+  .card .body{padding:12px;flex:1;display:flex;flex-direction:column;gap:8px;}
+  .card h3{margin:0;font-size:16px;}
+  .price{color:var(--accent1);font-weight:700;}
+  .excerpt{color:var(--muted);font-size:14px;flex:1;}
+  .card .actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end;}
+  .card .actions a{padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700;color:#fff;background:linear-gradient(90deg,var(--accent1),var(--accent2));}
+
+  /* product detail modal */
+  .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:1000;}
+  .modal{width:95%;max-width:800px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+  .modal .modal-body{display:flex;gap:0;flex-wrap:wrap;}
+  .modal .left{flex:1;min-width:260px;padding:0;}
+  .modal .left img{width:100%;height:100%;object-fit:cover;display:block;}
+  .modal .right{flex:1;min-width:260px;padding:18px;}
+  .close-x{position:absolute;right:12px;top:12px;background:rgba(0,0,0,0.06);border-radius:8px;padding:6px;cursor:pointer;}
+
+  /* registration / login form */
+  .auth-panel{display:flex;flex-direction:column;gap:8px;padding:12px;background:rgba(255,255,255,0.9);border-radius:8px;}
+  .auth-panel input{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);width:100%;}
+  .auth-actions{display:flex;gap:8px;justify-content:flex-end;}
+
+  /* footer */
+  footer{padding:14px 18px;background:rgba(255,255,255,0.95);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);}
+
+  /* small screens */
+  @media (max-width:900px){
+    .main{grid-template-columns:1fr; padding:12px;}
+    header{flex-direction:column;align-items:flex-start;gap:10px;}
+    .top-actions{align-self:stretch;justify-content:flex-end;}
+  }
 </style>
 </head>
 <body>
+<div class="page-overlay">
+  <div class="site" role="main" aria-label="貓貓燈具網站主內容">
 
-<header>
-    <h1>我的個人網站</h1>
-</header>
-
-<div class="container">
-
-    <!-- 商品區 -->
-    <div class="section" id="products">
-        <h2>商品展示</h2>
-        <div class="products">
-
-            <!-- 商品卡片1 -->
-            <div class="product-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <div class="carousel">
-                            <img src="https://via.placeholder.com/300x180?text=商品1-1" class="active" alt="商品1圖片1">
-                            <img src="https://via.placeholder.com/300x180?text=商品1-2" alt="商品1圖片2">
-                        </div>
-                        <h3>商品名稱1</h3>
-                        <p>簡短介紹文字</p>
-                    </div>
-                    <div class="card-back">
-                        <p>更多細節說明文字或促銷訊息。</p>
-                        <div class="buttons">
-                            <a href="#">了解更多</a>
-                            <a href="#">購買</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 商品卡片2 -->
-            <div class="product-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <div class="carousel">
-                            <img src="https://via.placeholder.com/300x180?text=商品2-1" class="active" alt="商品2圖片1">
-                            <img src="https://via.placeholder.com/300x180?text=商品2-2" alt="商品2圖片2">
-                        </div>
-                        <h3>商品名稱2</h3>
-                        <p>簡短介紹文字</p>
-                    </div>
-                    <div class="card-back">
-                        <p>更多細節說明文字或促銷訊息。</p>
-                        <div class="buttons">
-                            <a href="#">了解更多</a>
-                            <a href="#">購買</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+    <!-- header -->
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">貓</div>
+        <div>
+          <h1>貓貓燈具</h1>
+          <div class="tag">專業燈具設計 • 居家/商業照明方案</div>
         </div>
+      </div>
+
+      <div class="top-actions" id="user-actions">
+        <div id="welcome" style="display:none;color:var(--muted);margin-right:8px;">歡迎，<span id="user-name"></span></div>
+        <button class="btn small" id="open-register">註冊 / 登入</button>
+        <a class="btn small ghost" id="contact-us" href="#contact">客服聯絡</a>
+      </div>
+    </header>
+
+    <!-- main -->
+    <div class="main">
+
+      <!-- sidebar -->
+      <aside class="sidebar" aria-label="公司資訊與服務">
+        <div class="company-name">
+          <div style="width:56px;height:56px;border-radius:8px;background:linear-gradient(135deg,var(--accent2),var(--accent1));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;">L</div>
+          <div>
+            <h2>貓貓燈具</h2>
+            <div class="tag">點亮生活 • 用光說故事</div>
+          </div>
+        </div>
+
+        <div class="intro" style="margin-top:12px;">
+          貓貓燈具為專業照明品牌，結合現代簡約與工業線條設計，提供居家與商業空間完整燈具解決方案。從概念設計到安裝服務，注重光線質感與使用者體驗。
+        </div>
+
+        <div class="categories">
+          <strong>產品分類</strong>
+          <div class="cat-list" id="categoryList" role="navigation" aria-label="產品分類">
+            <div class="cat-item active" data-cat="all">全部 <span style="color:var(--muted);font-size:13px">（示範範例）</span></div>
+            <div class="cat-item" data-cat="chandeliers">吊燈</div>
+            <div class="cat-item" data-cat="wall">壁燈</div>
+            <div class="cat-item" data-cat="ceiling">吸頂燈</div>
+            <div class="cat-item" data-cat="spot">投射燈</div>
+            <div class="cat-item" data-cat="strip">燈條</div>
+            <div class="cat-item" data-cat="track">軌道燈</div>
+          </div>
+        </div>
+
+        <div class="contact-box" id="contact">
+          <strong>客服聯絡</strong>
+          <p>客服專線：<a href="tel:+886912345678">+886 912 345 678</a></p>
+          <p>Email：<a href="mailto:service@maomaolights.example">service@maomaolights.example</a></p>
+          <p>營業時間：週一至週五 09:00–18:00</p>
+          <div style="margin-top:8px;">
+            <a class="btn small" href="mailto:service@maomaolights.example">發送客服信件</a>
+          </div>
+        </div>
+      </aside>
+
+      <!-- content -->
+      <section class="content" aria-label="產品展示區">
+        <div class="toolbar">
+          <div class="search">
+            <input id="searchInput" placeholder="搜尋產品名稱或關鍵字 (例如：吊燈)" aria-label="搜尋產品" />
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn small ghost" id="show-all">清除篩選</button>
+            <button class="btn small" id="open-register-2">會員中心</button>
+          </div>
+        </div>
+
+        <div class="grid" id="productGrid" aria-live="polite">
+          <!-- Product cards (populated by JS) -->
+        </div>
+      </section>
     </div>
 
-    <!-- 聯絡方式 -->
-    <div class="section" id="contact">
-        <h2>聯絡方式</h2>
-        <p>Email: <a href="mailto:example@example.com">example@example.com</a></p>
-        <p>電話: 0912-345-678</p>
-        <p>社群連結:</p>
-        <div class="buttons">
-            <a href="#">Facebook</a>
-            <a href="#">Instagram</a>
-            <a href="#">LinkedIn</a>
-        </div>
-    </div>
-
+    <!-- footer -->
+    <footer>
+      <div>© <span id="year"></span> 貓貓燈具</div>
+      <div style="color:var(--muted);">設計 • 燈具選購 • 線上展示</div>
+    </footer>
+  </div>
 </div>
 
-<footer>
-    &copy; 2025 我的個人網站
-</footer>
+<!-- modal: product detail -->
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" role="document">
+    <div style="position:relative;">
+      <button class="close-x" id="closeModal" aria-label="關閉">✕</button>
+      <div class="modal-body">
+        <div class="left"><img id="modalImg" src="" alt="產品圖片" /></div>
+        <div class="right">
+          <h2 id="modalTitle"></h2>
+          <div id="modalCategory" style="color:var(--muted);margin-bottom:10px;"></div>
+          <p id="modalDesc" style="line-height:1.6;color:#333;"></p>
+          <div style="margin-top:12px;font-size:18px;"><span class="price" id="modalPrice"></span></div>
+          <div style="margin-top:16px;display:flex;gap:8px;">
+            <a id="buyNow" class="btn" href="#">立即購買</a>
+            <a id="inquiry" class="btn ghost" href="#">詢問客服</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal: register/login -->
+<div class="modal-backdrop" id="authBackdrop" aria-hidden="true" style="align-items:center;display:none">
+  <div class="modal" style="max-width:420px;padding:18px;">
+    <div style="position:relative;">
+      <button class="close-x" id="closeAuth">✕</button>
+      <h3 style="margin-top:0">會員註冊 / 登入</h3>
+      <div class="auth-panel" id="authPanel">
+        <input id="regName" placeholder="姓名" />
+        <input id="regEmail" placeholder="Email" />
+        <input id="regPass" placeholder="密碼（至少6字）" type="password" />
+        <div style="display:flex;gap:8px;justify-content:flex-end;">
+          <button class="btn" id="registerBtn">註冊</button>
+          <button class="btn ghost" id="loginBtn">登入</button>
+        </div>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px;">會員資料僅存在此裝置（示範）。</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-    // 輪播功能
-    const carousels = document.querySelectorAll('.carousel');
-    carousels.forEach(carousel => {
-        let index = 0;
-        const images = carousel.querySelectorAll('img');
-        setInterval(() => {
-            images[index].classList.remove('active');
-            index = (index + 1) % images.length;
-            images[index].classList.add('active');
-        }, 3000); // 每3秒切換
-    });
-</script>
+/* ===== demo product data =====
+   Each product: id, title, category, price, images[], excerpt, desc
+*/
+const PRODUCTS = [
+  {
+    id: 'p1',
+    title: '貓眼吊燈（經典款）',
+    category: 'chandeliers',
+    price: 'NT$4,800',
+    images: [
+      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1505691723518-36a0b0e2b403?q=80&w=1200&auto=format&fit=crop'
+    ],
+    excerpt: '簡約金屬造型，柔和暖光，適合客廳與餐廳。',
+    desc: '貓眼吊燈採用鋁合金與磨砂玻璃，內建可調光 LED，提供溫暖的 2700K 燈色，安裝方便且兼具設計感。'
+  },
+  {
+    id: 'p2',
+    title: '柔光壁燈（北歐風）',
+    category: 'wall',
+    price: 'NT$1,980',
+    images: [
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1200&auto=format&fit=crop'
+    ],
+    excerpt: '牆面裝飾與閱讀燈一體化，光線柔和。',
+    desc: '壁燈採用霧面玻璃與金屬底座，角度可調，適合床頭與走廊照明。'
+  },
+  {
+    id: 'p3',
+    title: '極簡吸頂燈（平板）',
+    category: 'ceiling',
+    price: 'NT$2,600',
+    images: [
+      'https://images.unsplash.com/photo-1523413651479-597eb2da0ad6?q=80&w=1200&auto=format&fit=crop'
+    ],
+    excerpt: '低調平板設計，安裝後與天花板自然融合。',
+    desc: '此款吸頂燈以薄型面板為主體，搭配高顯色 CRI>90 LED，適合臥室與辦公室使用。'
+  },
+  {
+    id: 'p4',
+    title: '投射射燈（商業軌道）',
+    category: 'spot',
+    price: 'NT$1,450',
+    images: [
+      'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop'
+    ],
+    excerpt: '高顯色度，聚焦照明，適合展示與櫃位照明。',
+    desc: '投射燈支援 30° / 60° 調整角度，可搭配軌道系統，便於商業空間快速調度。'
+  },
+  {
+    id: 'p5',
+    title: '高亮燈條（防水）',
+    category: 'strip',
+    price: 'NT$780',
+    images: [
+      'https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop'
+    ],
+    excerpt: '柔性燈條，支援 RGB 與調色溫，IP65 防水等級。',
+    desc: '適合櫥櫃、樓梯與展示櫃背光，長度可裁剪，並支援 12V 直流供電。'
+  },
+  {
+    id: 'p6',
+    title: '磁吸軌道燈（可調焦）',
+    category: 'track',
+    price: 'NT$2,100',
+    images: [
+      'https://images.unsplash.com/photo-1483058712412-4245e9b90334?q=80&w=1200&auto=format&fit=crop'
+    ],
+    excerpt: '磁吸快速安裝，適合畫廊與精品店使用。',
+    desc: '模組化設計，可任意配置燈頭、聚散光配件與色溫模組，便於空間調整。'
+  }
+];
 
+/* ===== render products into grid ===== */
+const productGrid = document.getElementById('productGrid');
+const categoryList = document.getElementById('categoryList');
+const searchInput = document.getElementById('searchInput');
+const yearSpan = document.getElementById('year');
+yearSpan.textContent = new Date().getFullYear();
+
+let activeCategory = 'all';
+let searchTerm = '';
+
+function renderGrid(){
+  productGrid.innerHTML = '';
+  const filtered = PRODUCTS.filter(p=>{
+    const matchCat = activeCategory === 'all' ? true : p.category === activeCategory;
+    const term = searchTerm.trim().toLowerCase();
+    const matchSearch = !term || p.title.toLowerCase().includes(term) || p.excerpt.toLowerCase().includes(term) || p.desc.toLowerCase().includes(term);
+    return matchCat && matchSearch;
+  });
+  if(filtered.length === 0){
+    productGrid.innerHTML = '<div style="grid-column:1/-1;padding:18px;background:rgba(255,255,255,0.9);border-radius:8px;color:var(--muted)">找不到產品。請嘗試其他關鍵字或分類。</div>';
+    return;
+  }
+  filtered.forEach(p=>{
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.innerHTML = `
+      <img class="photo" src="${p.images[0]}" alt="${escapeHtml(p.title)} 圖片" loading="lazy" />
+      <div class="body">
+        <h3>${escapeHtml(p.title)}</h3>
+        <div class="price">${escapeHtml(p.price)}</div>
+        <div class="excerpt">${escapeHtml(p.excerpt)}</div>
+        <div class="actions">
+          <a href="#" data-id="${p.id}" class="open-detail">詳細</a>
+        </div>
+      </div>
+    `;
+    productGrid.appendChild(card);
+  });
+  // attach detail listeners
+  document.querySelectorAll('.open-detail').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const id = btn.dataset.id;
+      openDetail(id);
+    });
+  });
+}
+function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* category click handling */
+categoryList.querySelectorAll('.cat-item').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    categoryList.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    activeCategory = el.dataset.cat;
+    renderGrid();
+  });
+});
+
+/* search */
+searchInput.addEventListener('input', (e)=>{
+  searchTerm = e.target.value;
+  renderGrid();
+});
+document.getElementById('show-all').addEventListener('click', ()=>{
+  searchInput.value = '';
+  searchTerm = '';
+  activeCategory = 'all';
+  categoryList.querySelectorAll('.cat-item').forEach(x=>x.classList.remove('active'));
+  categoryList.querySelectorAll('.cat-item')[0].classList.add('active');
+  renderGrid();
+});
+
+/* detail modal logic */
+const modal = document.getElementById('modalBackdrop');
+const modalImg = document.getElementById('modalImg');
+const modalTitle = document.getElementById('modalTitle');
+const modalDesc = document.getElementById('modalDesc');
+const modalPrice = document.getElementById('modalPrice');
+const modalCategory = document.getElementById('modalCategory');
+const buyNow = document.getElementById('buyNow');
+const inquiry = document.getElementById('inquiry');
+
+function openDetail(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  modalImg.src = p.images[0];
+  modalImg.alt = p.title + ' 圖片';
+  modalTitle.textContent = p.title;
+  modalDesc.textContent = p.desc;
+  modalPrice.textContent = p.price;
+  modalCategory.textContent = '分類：' + categoryLabel(p.category);
+  buyNow.href = '#';
+  inquiry.href = 'mailto:service@maomaolights.example?subject=詢問：' + encodeURIComponent(p.title);
+  modal.style.display = 'flex';
+  modal.setAttribute('aria-hidden','false');
+}
+function closeDetail(){ modal.style.display = 'none'; modal.setAttribute('aria-hidden','true'); }
+document.getElementById('closeModal').addEventListener('click', closeDetail);
+modal.addEventListener('click', (e)=>{ if(e.target === modal) closeDetail(); });
+
+function categoryLabel(cat){
+  return {
+    chandeliers:'吊燈',
+    wall:'壁燈',
+    ceiling:'吸頂燈',
+    spot:'投射燈',
+    strip:'燈條',
+    track:'軌道燈'
+  }[cat] || cat;
+}
+
+/* ===== basic member registration/login (localStorage demo) ===== */
+const authBackdrop = document.getElementById('authBackdrop');
+const openRegisterBtns = [document.getElementById('open-register'), document.getElementById('open-register-2')];
+const closeAuth = document.getElementById('closeAuth');
+const registerBtn = document.getElementById('registerBtn');
+const loginBtn = document.getElementById('loginBtn');
+const regName = document.getElementById('regName');
+const regEmail = document.getElementById('regEmail');
+const regPass = document.getElementById('regPass');
+const welcome = document.getElementById('welcome');
+const userNameSpan = document.getElementById('user-name');
+
+openRegisterBtns.forEach(b=>b.addEventListener('click', ()=>{ authBackdrop.style.display='flex'; authBackdrop.setAttribute('aria-hidden','false'); }));
+closeAuth.addEventListener('click', ()=>{ authBackdrop.style.display='none'; authBackdrop.setAttribute('aria-hidden','true'); });
+
+registerBtn.addEventListener('click', ()=>{
+  const name = regName.value.trim();
+  const email = regEmail.value.trim().toLowerCase();
+  const pass = regPass.value;
+  if(!name || !email || pass.length < 6){ alert('請填寫正確姓名、Email，密碼至少6字'); return; }
+  const users = JSON.parse(localStorage.getItem('maomaouser')||'{}');
+  if(users[email]){ alert('此 Email 已註冊，請直接登入'); return; }
+  users[email] = {name, pass};
+  localStorage.setItem('maomaouser', JSON.stringify(users));
+  localStorage.setItem('maomao_current', email);
+  applyLoginState();
+  authBackdrop.style.display='none';
+});
+loginBtn.addEventListener('click', ()=>{
+  const email = regEmail.value.trim().toLowerCase();
+  const pass = regPass.value;
+  const users = JSON.parse(localStorage.getItem('maomaouser')||'{}');
+  if(!users[email] || users[email].pass !== pass){ alert('登入失敗：帳號或密碼錯誤'); return; }
+  localStorage.setItem('maomao_current', email);
+  applyLoginState();
+  authBackdrop.style.display='none';
+});
+
+function applyLoginState(){
+  const cur = localStorage.getItem('maomao_current');
+  if(cur){
+    const users = JSON.parse(localStorage.getItem('maomaouser')||'{}');
+    const u = users[cur];
+    welcome.style.display='inline';
+    userNameSpan.textContent = u ? u.name : cur;
+    // replace register button with logout
+    document.getElementById('open-register').style.display='none';
+    document.getElementById('open-register-2').textContent = '會員中心';
+    // add logout if not exists
+    if(!document.getElementById('logoutBtn')){
+      const logout = document.createElement('button');
+      logout.className = 'btn small ghost';
+      logout.id = 'logoutBtn';
+      logout.textContent = '登出';
+      logout.addEventListener('click', ()=>{
+        localStorage.removeItem('maomao_current');
+        location.reload();
+      });
+      document.getElementById('user-actions').appendChild(logout);
+    }
+  } else {
+    welcome.style.display='none';
+    document.getElementById('open-register').style.display='inline-block';
+  }
+}
+
+/* initial render */
+renderGrid();
+applyLoginState();
+
+/* small helper: open contact anchor click on header */
+document.getElementById('contact-us').addEventListener('click', (e)=>{ e.preventDefault(); document.getElementById('contact').scrollIntoView({behavior:'smooth'}); });
+
+/* very small accessibility: Escape to close modals */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape'){
+    closeDetail();
+    authBackdrop.style.display='none';
+  }
+});
+
+/* demonstration: small auto-rotation of product images in modal when opened (if product has multiple images) */
+let modalRotationInterval = null;
+function startModalRotation(images){
+  stopModalRotation();
+  if(!images || images.length <= 1) return;
+  let idx = 0;
+  modalRotationInterval = setInterval(()=>{
+    idx = (idx + 1) % images.length;
+    modalImg.src = images[idx];
+  }, 2500);
+}
+function stopModalRotation(){ if(modalRotationInterval) clearInterval(modalRotationInterval); modalRotationInterval = null; }
+
+/* ensure rotation starts when opening modal (wrapped openDetail) */
+const originalOpen = openDetail;
+openDetail = function(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  modalImg.src = p.images[0];
+  originalOpen(id);
+  startModalRotation(p.images);
+};
+closeDetail = function(){
+  modal.style.display = 'none';
+  modal.setAttribute('aria-hidden','true');
+  stopModalRotation();
+};
+document.getElementById('closeModal').addEventListener('click', closeDetail);
+
+/* enhance buyNow: if user logged in, simulate purchase flow */
+buyNow.addEventListener('click', (e)=>{
+  e.preventDefault();
+  const cur = localStorage.getItem('maomao_current');
+  if(!cur){
+    alert('請先登入或註冊會員以進行購買。');
+    authBackdrop.style.display='flex';
+    return;
+  }
+  alert('模擬購買完成（示範）：我們已收到訂單，客服會以 Email 聯絡您。');
+  closeDetail();
+});
+
+/* small utility: wire inquiry to mailto */
+inquiry.addEventListener('click', (e)=>{ /* nothing extra, href set */ });
+
+</script>
 </body>
 </html>
