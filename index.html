@@ -1,139 +1,252 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>光之藝術 - 台灣燈具品牌</title>
-    <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary:#2D3436; --accent:#E17055; --light:#FDFDFD }
-        * { margin:0; padding:0; box-sizing:border-box }
-        body { font-family:'Noto Sans TC',sans-serif; background:var(--light); color:#2D3436; line-height:1.7 }
-        h1,h2,h3 { font-family:'Playfair Display',serif }
-        header { background:var(--primary); color:white; text-align:center; padding:2.5rem 1rem; position:relative }
-        .logo { font-size:2.2rem; font-weight:700 }
-        .hero { background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url('https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'); background-size:cover; color:white; text-align:center; padding:5rem 1rem; border-radius:0 0 20px 20px }
-        .hero h1 { font-size:2.8rem }
-        .container { max-width:1200px; margin:0 auto; padding:0 1rem }
-        .section-title { text-align:center; margin:3rem 0 2rem; font-size:2rem }
-        .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:2rem; padding:2rem 0 }
-        .product-card { background:white; border-radius:16px; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.08); text-align:center; transition:0.3s }
-        .product-card:hover { transform:translateY(-12px) }
-        .product-card img { width:100%; height:220px; object-fit:cover }
-        .product-info { padding:1.5rem }
-        .price { font-size:1.6rem; color:var(--accent); font-weight:bold }
-        .btn { display:inline-block; background:var(--primary); color:white; padding:0.75rem 1.8rem; border-radius:50px; text-decoration:none }
-        .snipcart-checkout { position:absolute; top:1.5rem; right:1rem; background:var(--accent); color:white; padding:0.6rem 1.2rem; border-radius:50px; font-size:0.9rem; text-decoration:none }
-        .contact { background:white; padding:3rem; border-radius:16px; margin:3rem auto; max-width:700px; box-shadow:0 8px 25px rgba(0,0,0,0.08) }
-        input,textarea { width:100%; padding:0.9rem; border:1.5px solid #ddd; border-radius:10px; margin-bottom:1rem }
-        footer { background:var(--primary); color:white; text-align:center; padding:2.5rem 1rem; margin-top:4rem }
-        @media(max-width:768px) { .hero h1 { font-size:2.2rem } .snipcart-checkout { position:static; float:right; margin:1rem } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>個人網站</title>
+<style>
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+    color: #333;
+}
+header {
+    background-color: #ffffff;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+header h1 {
+    margin: 0;
+    font-size: 2.2em;
+}
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+.section {
+    margin-bottom: 60px;
+}
+h2 {
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+/* 自動排版商品區 */
+.products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    justify-items: center;
+}
+/* 商品卡片 */
+.product-card {
+    background-color: #fff;
+    width: 100%;
+    height: 400px;
+    perspective: 1000px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+}
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+}
+.product-card:hover .card-inner {
+    transform: rotateY(180deg);
+}
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+.card-front img {
+    width: 100%;
+    height: 60%;
+    object-fit: cover;
+}
+.card-front h3, .card-front p {
+    margin: 10px 15px;
+}
+.card-back {
+    background-color: #f0f0f0;
+    color: #333;
+    transform: rotateY(180deg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.card-back p {
+    margin-bottom: 20px;
+}
+.buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+.buttons a {
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #007BFF, #00C6FF);
+    color: #fff;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.buttons a:hover {
+    background: linear-gradient(135deg, #0056b3, #0096c7);
+    transform: scale(1.05);
+}
+/* 聯絡區 */
+#contact p {
+    font-size: 1.1em;
+    margin: 8px 0;
+}
+footer {
+    text-align: center;
+    padding: 25px;
+    background-color: #eaeaea;
+    border-top: 1px solid #ddd;
+}
+/* 輪播 */
+.carousel {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto 20px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.carousel img {
+    width: 100%;
+    display: none;
+}
+.carousel img.active {
+    display: block;
+}
+/* 手機響應 */
+@media (max-width: 600px) {
+    .product-card {
+        height: auto;
+    }
+    .card-front img, .card-back {
+        height: auto;
+    }
+    .buttons {
+        flex-direction: column;
+    }
+    .buttons a {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
 </head>
 <body>
-    <div hidden id="snipcart" data-api-key="YOUR_SNIPCART_TEST_KEY"></div>
 
-    <header>
-        <div class="container">
-            <div class="logo">光之藝術</div>
-            <p>台灣設計｜光影美學</p>
-            <a href="#" class="snipcart-checkout">購物車 <span class="snipcart-items-count"></span> 件</a>
-        </div>
-    </header>
+<header>
+    <h1>我的個人網站</h1>
+</header>
 
-    <section class="hero">
-        <div class="container">
-            <h1>點亮你的生活空間</h1>
-            <p>每一盞燈，都是對生活的溫柔承諾</p>
-        </div>
-    </section>
+<div class="container">
 
-    <div class="container">
-        <h2 class="section-title">熱銷燈具</h2>
+    <!-- 商品區 -->
+    <div class="section" id="products">
+        <h2>商品展示</h2>
         <div class="products">
 
+            <!-- 商品卡片1 -->
             <div class="product-card">
-                <img src="tps://i.postimg.cc/zvSTCwKD/IMG-0415.jpg" alt="吊燈"
-					
-                    <h3>北歐原木吊燈</h3>
-                    <p>天然胡桃木 × 暖黃光源</p>
-                    <div class="price">NT$2,880</div>
-                    <a href="#" class="btn snipcart-add-item" 
-                       data-item-id="lamp1" 
-                       data-item-price="2880" 
-                       data-item-url="/" 
-                       data-item-name="北歐原木吊燈">加入購物車</a>
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="carousel">
+                            <img src="https://via.placeholder.com/300x180?text=商品1-1" class="active" alt="商品1圖片1">
+                            <img src="https://via.placeholder.com/300x180?text=商品1-2" alt="商品1圖片2">
+                        </div>
+                        <h3>商品名稱1</h3>
+                        <p>簡短介紹文字</p>
+                    </div>
+                    <div class="card-back">
+                        <p>更多細節說明文字或促銷訊息。</p>
+                        <div class="buttons">
+                            <a href="#">了解更多</a>
+                            <a href="#">購買</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            <!-- 商品卡片2 -->
             <div class="product-card">
-                <img src="" alt="落地燈">
-                <div class="product-info">
-                    <h3>工業風落地燈</h3>
-                    <p>鐵藝烤漆 × 高度可調</p>
-                    <div class="price">NT$3,680</div>
-                    <a href="#" class="btn snipcart-add-item" 
-                       data-item-id="lamp2" 
-                       data-item-price="3680" 
-                       data-item-url="/" 
-                       data-item-name="工業風落地燈">加入購物車</a>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1584031459300-4c28c09ea0c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="吸頂燈">
-                <div class="product-info">
-                    <h3>簡約LED吸頂燈</h3>
-                    <p>超薄設計 × 三段調光</p>
-                    <div class="price">NT$1,980</div>
-                    <a href="#" class="btn snipcart-add-item" 
-                       data-item-id="lamp3" 
-                       data-item-price="1980" 
-                       data-item-url="/" 
-                       data-item-name="簡約LED吸頂燈">加入購物車</a>
- </div>
-            </div>
-					
-					           <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1553481182-3a30be1d3e9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="極簡落地燈">
-                <div class="product-info">
-                    <h3>極簡黑鐵落地燈</h3>
-                    <p>可調角度 × E27燈泡</p>
-                    <div class="price">NT$2,580</div>
-                    <a href="#" class="btn snipcart-add-item" 
-                       data-item-id="lamp4" 
-                       data-item-price="2580" 
-                       data-item-url="/" 
-                       data-item-name="極簡黑鐵落地燈">加入購物車</a>
-                </div>
-            </div>
-
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="carousel">
+                            <img src="https://via.placeholder.com/300x180?text=商品2-1" class="active" alt="商品2圖片1">
+                            <img src="https://via.placeholder.com/300x180?text=商品2-2" alt="商品2圖片2">
+                        </div>
+                        <h3>商品名稱2</h3>
+                        <p>簡短介紹文字</p>
+                    </div>
+                    <div class="card-back">
+                        <p>更多細節說明文字或促銷訊息。</p>
+                        <div class="buttons">
+                            <a href="#">了解更多</a>
+                            <a href="#">購買</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
     </div>
-	
-    <div class="container">
-        <div class="contact">
-            <h2 style="text-align:center;margin-bottom:1.5rem">聯絡我們</h2>
-            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-                <input type="text" name="name" placeholder="姓名" required>
-                <input type="email" name="_replyto" placeholder="Email" required>
-                <input type="tel" name="phone" placeholder="電話（選填）">
-                <textarea name="message" rows="4" placeholder="我想詢問..." required></textarea>
-                <button type="submit" class="btn" style="width:100%;padding:1rem">送出詢問</button>
-            </form>
+
+    <!-- 聯絡方式 -->
+    <div class="section" id="contact">
+        <h2>聯絡方式</h2>
+        <p>Email: <a href="mailto:example@example.com">example@example.com</a></p>
+        <p>電話: 0912-345-678</p>
+        <p>社群連結:</p>
+        <div class="buttons">
+            <a href="#">Facebook</a>
+            <a href="#">Instagram</a>
+            <a href="#">LinkedIn</a>
         </div>
     </div>
 
-    <footer>
-        <div class="container">
-            <p>© 2025 光之藝術｜台灣製造</p>
-        </div>
-    </footer>
+</div>
 
-    <script async src="https://cdn.snipcart.com/themes/v3.3.0/default/snipcart.js"></script>
+<footer>
+    &copy; 2025 我的個人網站
+</footer>
+
+<script>
+    // 輪播功能
+    const carousels = document.querySelectorAll('.carousel');
+    carousels.forEach(carousel => {
+        let index = 0;
+        const images = carousel.querySelectorAll('img');
+        setInterval(() => {
+            images[index].classList.remove('active');
+            index = (index + 1) % images.length;
+            images[index].classList.add('active');
+        }, 3000); // 每3秒切換
+    });
+</script>
+
 </body>
 </html>
