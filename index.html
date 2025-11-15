@@ -3,273 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>貓貓燈具</title>
+<title>貓貓燈具 - 完整模擬電商</title>
 <style>
-/* 全域樣式 */
-body {
-    margin: 0;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-image: url('https://images.unsplash.com/photo-1557682269-5f5f992d4c2a?fit=crop&w=1600&q=80');
-    background-size: cover;
-    background-attachment: fixed;
-    color: #333;
-}
-header {
-    background-color: rgba(255,255,255,0.95);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-header img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-}
-header h1 {
-    margin: 0 20px;
-    font-size: 1.8em;
-}
-nav select {
-    padding: 8px;
-    font-size: 1em;
-}
-.container {
-    max-width: 1000px;
-    margin: 20px auto;
-    padding: 0 20px;
-}
-/* 商品區 */
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-    gap: 20px;
-}
-.product-card {
-    background-color: rgba(255,255,255,0.95);
-    border-radius: 10px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-.product-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-.product-card h3 {
-    margin: 10px 0 5px;
-}
-.product-card p {
-    margin: 0 0 10px;
-}
-.product-card button {
-    padding: 8px 12px;
-    margin-top: 5px;
-    background: linear-gradient(135deg,#007BFF,#00C6FF);
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-.product-card button:hover {
-    background: linear-gradient(135deg,#0056b3,#0096c7);
-}
-/* 購物車 */
-#cart {
-    background-color: rgba(255,255,255,0.95);
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-}
-#cart h2 { margin-top:0; }
-#cart ul { list-style: none; padding: 0; }
-#cart li { display:flex; justify-content: space-between; margin-bottom:5px; }
-#cart button { padding: 5px 10px; background:#ff5e5e; border:none; color:#fff; border-radius:5px; cursor:pointer; }
-#cart button:hover { background:#d40000; }
-/* 表單 */
-form {
-    background-color: rgba(255,255,255,0.95);
-    padding: 15px;
-    border-radius: 10px;
-    max-width: 500px;
-    margin: 20px auto;
-}
-form input, form select {
-    width: 100%;
-    padding: 8px;
-    margin: 5px 0 10px;
-    border-radius:5px;
-    border:1px solid #ccc;
-}
-form button {
-    width: 100%;
-    padding:10px;
-    background: linear-gradient(135deg,#007BFF,#00C6FF);
-    border:none;
-    color:#fff;
-    border-radius:5px;
-    cursor:pointer;
-}
-form button:hover {
-    background: linear-gradient(135deg,#0056b3,#0096c7);
-}
-/* 公司簡介 */
-footer {
-    text-align:center;
-    padding:20px;
-    margin-top:40px;
-    background-color: rgba(255,255,255,0.95);
-    border-top: 1px solid #ccc;
-}
+body{margin:0;font-family:'Helvetica Neue',Arial,sans-serif;background-image:url('https://images.unsplash.com/photo-1557682269-5f5f992d4c2a?fit=crop&w=1600&q=80');background-size:cover;background-attachment:fixed;color:#333;}
+header{background-color:rgba(255,255,255,0.95);display:flex;align-items:center;justify-content:space-between;padding:10px 20px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+header img{width:50px;height:50px;border-radius:50%;}
+header h1{margin:0 20px;font-size:1.8em;}
+nav{display:flex;gap:10px;flex-wrap:wrap;}
+nav button{padding:8px 12px;border:none;background:linear-gradient(135deg,#007BFF,#00C6FF);color:#fff;border-radius:5px;cursor:pointer;transition:0.2s;}
+nav button.active{background:linear-gradient(135deg,#0056b3,#0096c7);}
+nav button:hover{transform:scale(1.05);}
+.container{max-width:1000px;margin:20px auto;padding:0 20px;}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.product-card{background-color:rgba(255,255,255,0.95);border-radius:10px;padding:15px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);transition:0.3s;}
+.product-card:hover{transform:translateY(-5px);}
+.product-card img{width:100%;height:180px;object-fit:cover;border-radius:8px;}
+.product-card h3{margin:10px 0 5px;}
+.product-card p{margin:0 0 10px;}
+.product-card button{padding:5px 10px;margin:2px;background:linear-gradient(135deg,#007BFF,#00C6FF);color:#fff;border:none;border-radius:5px;cursor:pointer;transition:0.2s;}
+.product-card button:hover{background:linear-gradient(135deg,#0056b3,#0096c7);}
+#cart{background-color:rgba(255,255,255,0.95);padding:15px;border-radius:10px;margin-bottom:30px;}
+#cart h2{margin-top:0;}
+#cart ul{list-style:none;padding:0;}
+#cart li{display:flex;justify-content: space-between;align-items:center;margin-bottom:5px;}
+#cart li button{padding:5px 10px;background:#ff5e5e;border:none;color:#fff;border-radius:5px;cursor:pointer;margin-left:5px;}
+#cart li button:hover{background:#d40000;}
+form{background-color:rgba(255,255,255,0.95);padding:15px;border-radius:10px;max-width:500px;margin:20px auto;}
+form input, form select{width:100%;padding:8px;margin:5px 0 10px;border-radius:5px;border:1px solid #ccc;}
+form button{width:100%;padding:10px;background:linear-gradient(135deg,#007BFF,#00C6FF);border:none;color:#fff;border-radius:5px;cursor:pointer;transition:0.2s;}
+form button:hover{background:linear-gradient(135deg,#0056b3,#0096c7);}
+#orderStatus{background-color:rgba(255,255,255,0.95);padding:10px;border-radius:10px;margin:20px 0;}
+#memberArea{background-color:rgba(255,255,255,0.95);padding:10px;border-radius:10px;margin:10px 0;text-align:right;}
+#orderHistory{background-color:rgba(255,255,255,0.95);padding:15px;border-radius:10px;margin:20px 0;}
+.order-item{border-top:1px solid #ccc;margin-top:10px;padding-top:10px;}
+.toggleDetails{cursor:pointer;color:#007BFF;text-decoration:underline;margin-left:10px;}
+.orderDetails{display:none;margin-top:5px;padding-left:10px;}
+footer{text-align:center;padding:20px;margin-top:40px;background-color:rgba(255,255,255,0.95);border-top:1px solid #ccc;}
+@media(max-width:600px){.product-card img{height:auto;}}
 </style>
 </head>
 <body>
 
 <header>
-    <img src="https://placekitten.com/50/50" alt="公司頭貼">
-    <h1>貓貓燈具</h1>
-    <nav>
-        <select id="categorySelect">
-            <option value="all">全部商品</option>
-            <option value="吊燈">吊燈</option>
-            <option value="壁燈">壁燈</option>
-            <option value="吸頂燈">吸頂燈</option>
-            <option value="投射燈">投射燈</option>
-            <option value="燈條">燈條</option>
-            <option value="軌道燈">軌道燈</option>
-        </select>
-    </nav>
+<img src="https://placekitten.com/50/50" alt="公司頭貼">
+<h1>貓貓燈具</h1>
+<nav id="categoryNav"></nav>
 </header>
 
 <div class="container">
 
-    <!-- 商品區 -->
-    <div class="products" id="productList">
-        <!-- 商品將由JS生成 -->
-    </div>
+<div id="memberArea">
+<span id="welcomeMsg"></span>
+<button id="logoutBtn" style="display:none;">登出</button>
+</div>
 
-    <!-- 購物車 -->
-    <div id="cart">
-        <h2>購物車</h2>
-        <ul id="cartItems"></ul>
-        <p>總計：$<span id="cartTotal">0</span></p>
-    </div>
+<div class="products" id="productList"></div>
 
-    <!-- 顧客下單表單 -->
-    <form id="checkoutForm">
-        <h2>顧客資料</h2>
-        <input type="text" id="name" placeholder="姓名" required>
-        <input type="tel" id="phone" placeholder="電話" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="text" id="address" placeholder="收貨地址" required>
-        <select id="payment" required>
-            <option value="">付款方式</option>
-            <option value="貨到付款">貨到付款</option>
-            <option value="線上付款">線上付款</option>
-        </select>
-        <button type="submit">下單</button>
-    </form>
+<div id="cart">
+<h2>購物車</h2>
+<ul id="cartItems"></ul>
+<p>總計：$<span id="cartTotal">0</span></p>
+</div>
+
+<div id="orderStatus"></div>
+
+<form id="memberForm">
+<h2>會員系統</h2>
+<input type="text" id="memberUsername" placeholder="帳號" required>
+<input type="password" id="memberPassword" placeholder="密碼" required>
+<input type="email" id="memberEmail" placeholder="Email (註冊用)">
+<button type="submit" id="memberBtn">註冊 / 登入</button>
+</form>
+
+<form id="checkoutForm">
+<h2>顧客資料</h2>
+<input type="text" id="name" placeholder="姓名" required>
+<input type="tel" id="phone" placeholder="電話" required>
+<input type="email" id="email" placeholder="Email" required>
+<input type="text" id="address" placeholder="收貨地址" required>
+<select id="payment" required>
+<option value="">付款方式</option>
+<option value="貨到付款">貨到付款</option>
+<option value="線上付款">線上付款</option>
+</select>
+<button type="submit">下單</button>
+</form>
+
+<div id="orderHistory">
+<h2>歷史訂單</h2>
+<ul id="historyList"></ul>
+</div>
 
 </div>
 
 <footer>
-    <h2>公司簡介</h2>
-    <p>貓貓燈具專注於提供創意又高品質的室內照明產品，從吊燈到燈條，讓每個空間都溫暖舒適，營造獨特氛圍。</p>
+<h2>公司簡介</h2>
+<p>貓貓燈具專注於提供創意又高品質的室內照明產品，從吊燈到燈條，讓每個空間都溫暖舒適，營造獨特氛圍。</p>
 </footer>
 
 <script>
-// 範例商品資料
-const products = [
-    {id:1,name:"現代吊燈A",category:"吊燈",price:2500,img:"https://placekitten.com/300/180",desc:"適合客廳使用"},
-    {id:2,name:"復古壁燈B",category:"壁燈",price:1200,img:"https://placekitten.com/301/180",desc:"適合走廊或臥室"},
-    {id:3,name:"吸頂燈C",category:"吸頂燈",price:1800,img:"https://placekitten.com/302/180",desc:"節能又明亮"},
-    {id:4,name:"投射燈D",category:"投射燈",price:900,img:"https://placekitten.com/303/180",desc:"可調整方向"},
-    {id:5,name:"燈條E",category:"燈條",price:600,img:"https://placekitten.com/304/180",desc:"裝飾性強"},
-    {id:6,name:"軌道燈F",category:"軌道燈",price:1500,img:"https://placekitten.com/305/180",desc:"適合展示空間"}
-];
+// 商品資料
+const products=[
+{id:1,name:"現代吊燈A",category:"吊燈",price:2500,img:"https://placekitten.com/300/180",desc:"適合客廳使用"},
+{id:2,name:"復古壁燈B",category:"壁燈",price:1200,img:"https://placekitten.com/301/180",desc:"適合走廊或臥室"},
+{id:3,name:"吸頂燈C",category:"吸頂燈",price:1800,img:"https://placekitten.com/302/180",desc:"節能又明亮"},
+{id:4,name:"投射燈D",category:"投射燈",price:900,img:"https://placekitten.com/303/180",desc:"可調整方向"},
+{id:5,name:"燈條E",category:"燈條",price:600,img:"https://placekitten.com/304/180",desc:"裝飾性強"},
+{id:6,name:"軌道燈F",category:"軌道燈",price:1500,img:"https://placekitten.com/305/180",desc:"適合展示空間"}];
+const categories=["全部商品","吊燈","壁燈","吸頂燈","投射燈","燈條","軌道燈"];
+let cart=[]; let currentMember=null;
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// 會員系統
+function updateMemberUI(){const welcome=document.getElementById("welcomeMsg");const logoutBtn=document.getElementById("logoutBtn");const memberForm=document.getElementById("memberForm");if(currentMember){welcome.textContent=`歡迎，${currentMember.username}`;logoutBtn.style.display="inline-block";memberForm.style.display="none";cart=currentMember.cart||[];renderCart();renderHistory();} else {welcome.textContent="";logoutBtn.style.display="none";memberForm.style.display="block";cart=[];renderCart();renderHistory();}}
+document.getElementById("logoutBtn").addEventListener("click",()=>{if(confirm("確定要登出嗎？")){ currentMember=null; updateMemberUI();}});
+
+// 註冊 / 登入
+document.getElementById("memberForm").addEventListener("submit",e=>{e.preventDefault();const u=document.getElementById("memberUsername").value;const p=document.getElementById("memberPassword").value;const em=document.getElementById("memberEmail").value;let members=JSON.parse(localStorage.getItem("members"))||[];let member=members.find(m=>m.username===u);if(member){if(member.password===p){alert("登入成功");currentMember=member;}else {alert("密碼錯誤");return;}} else {member={username:u,password:p,email:em,cart:[],orders:[]};members.push(member);localStorage.setItem("members",JSON.stringify(members));alert("註冊成功並登入");currentMember=member;}updateMemberUI();});
+
+// 顯示分類按鈕
+const categoryNav=document.getElementById("categoryNav");
+categories.forEach(cat=>{const btn=document.createElement("button");btn.textContent=cat;btn.className=cat==="全部商品"?"active":"";btn.onclick=()=>{displayProducts(cat);document.querySelectorAll('#categoryNav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');};categoryNav.appendChild(btn);});
 
 // 顯示商品
-function displayProducts(filter="all"){
-    const list = document.getElementById("productList");
-    list.innerHTML = "";
-    let filtered = filter==="all"?products:products.filter(p=>p.category===filter);
-    filtered.forEach(p=>{
-        const div = document.createElement("div");
-        div.className="product-card";
-        div.innerHTML=`
-            <img src="${p.img}" alt="${p.name}">
-            <h3>${p.name}</h3>
-            <p>${p.desc}</p>
-            <p>價格: $${p.price}</p>
-            <button onclick="addToCart(${p.id})">加入購物車</button>
-        `;
-        list.appendChild(div);
-    });
-}
+function displayProducts(filter="全部商品"){const list=document.getElementById("productList");list.innerHTML="";let filtered=filter==="全部商品"?products:products.filter(p=>p.category===filter);filtered.forEach(p=>{const div=document.createElement("div");div.className="product-card";div.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>${p.desc}</p><p>價格: $${p.price}</p><button onclick="addToCart(${p.id},1)">+1</button><button onclick="addToCart(${p.id},1)">加入購物車</button>`;list.appendChild(div);});}
 displayProducts();
 
-// 商品分類切換
-document.getElementById("categorySelect").addEventListener("change",e=>{
-    displayProducts(e.target.value);
-});
+// 購物車
+function addToCart(id,qty=1){const product=products.find(p=>p.id===id);const existing=cart.find(item=>item.id===id);if(existing) existing.qty+=qty;else cart.push({...product,qty:qty});saveCart();renderCart();}
+function renderCart(){const ul=document.getElementById("cartItems");ul.innerHTML="";let total=0;cart.forEach((item,index)=>{const li=document.createElement("li");li.innerHTML=`${item.name} x ${item.qty} - $${item.price*item.qty}`;const minusBtn=document.createElement("button");minusBtn.textContent="-";minusBtn.onclick=()=>{updateQty(index,-1);};const plusBtn=document.createElement("button");plusBtn.textContent="+";plusBtn.onclick=()=>{updateQty(index,1);};const removeBtn=document.createElement("button");removeBtn.textContent="移除";removeBtn.onclick=()=>{if(confirm("確定要移除這個商品嗎？")){updateQty(index,0);}};li.appendChild(minusBtn);li.appendChild(plusBtn);li.appendChild(removeBtn);ul.appendChild(li);total+=item.price*item.qty;});document.getElementById("cartTotal").innerText=total;}
+function updateQty(index,delta){if(delta===0) cart.splice(index,1);else {cart[index].qty+=delta;if(cart[index].qty<1) cart.splice(index,1);}saveCart();renderCart();}
+function saveCart(){if(currentMember){currentMember.cart=cart;updateMemberStorage();}else{localStorage.setItem("cart",JSON.stringify(cart));}}
+function updateMemberStorage(){let members=JSON.parse(localStorage.getItem("members"))||[];const idx=members.findIndex(m=>m.username===currentMember.username);if(idx>=0){members[idx]=currentMember;localStorage.setItem("members",JSON.stringify(members));}}
 
-// 加入購物車
-function addToCart(id){
-    const product = products.find(p=>p.id===id);
-    const existing = cart.find(item=>item.id===id);
-    if(existing) existing.qty += 1;
-    else cart.push({...product,qty:1});
-    localStorage.setItem("cart",JSON.stringify(cart));
-    renderCart();
-}
+// 下單
+document.getElementById("checkoutForm").addEventListener("submit",e=>{e.preventDefault();if(cart.length===0){alert("請先加入商品");return;}const order={id:Date.now(),name:document.getElementById("name").value,phone:document.getElementById("phone").value,email:document.getElementById("email").value,address:document.getElementById("address").value,payment:document.getElementById("payment").value,items:cart};if(currentMember){currentMember.orders.push(order);currentMember.cart=[];updateMemberStorage();cart=[];renderCart();}simulateEmail(order);document.getElementById("checkoutForm").reset();renderHistory();});
+function simulateEmail(order){const statusDiv=document.getElementById("orderStatus");statusDiv.innerHTML=`<p>訂單 #${order.id} 已成立！Email 已發送至 ${order.email}</p>`;setTimeout(()=>{statusDiv.innerHTML+=`<p>訂單處理中...</p>`;},2000);setTimeout(()=>{statusDiv.innerHTML+=`<p>商品已出貨！</p>`;},4000);}
 
-// 顯示購物車
-function renderCart(){
-    const ul = document.getElementById("cartItems");
-    ul.innerHTML="";
-    let total=0;
-    cart.forEach((item,index)=>{
-        const li = document.createElement("li");
-        li.innerHTML=`${item.name} x ${item.qty} - $${item.price*item.qty} <button onclick="removeCart(${index})">移除</button>`;
-        ul.appendChild(li);
-        total += item.price*item.qty;
-    });
-    document.getElementById("cartTotal").innerText = total;
-}
-renderCart();
-
-// 移除購物車
-function removeCart(index){
-    cart.splice(index,1);
-    localStorage.setItem("cart",JSON.stringify(cart));
-    renderCart();
-}
-
-// 下單表單
-document.getElementById("checkoutForm").addEventListener("submit",e=>{
-    e.preventDefault();
-    if(cart.length===0){ alert("請先加入商品"); return; }
-    const order={
-        name:document.getElementById("name").value,
-        phone:document.getElementById("phone").value,
-        email:document.getElementById("email").value,
-        address:document.getElementById("address").value,
-        payment:document.getElementById("payment").value,
-        items:cart
-    };
-    console.log("下單資料:",order); // 可串接後端或API
-    alert(`訂單已成立！模擬簡訊通知:\n訂單處理中...`);
-    cart=[];
-    localStorage.removeItem("cart");
-    renderCart();
-    document.getElementById("checkoutForm").reset();
-});
+// 歷史訂單明細展開
+function renderHistory(){const ul=document.getElementById("historyList");ul.innerHTML="";if(currentMember && currentMember.orders.length>0){currentMember.orders.forEach(o=>{const li=document.createElement("li");li.className="order-item";const totalQty=o.items.reduce((a,b)=>a+b.qty,0);const totalPrice=o.items.reduce((a,b)=>a+b.qty*b.price,0);li.innerHTML=`訂單 #${o.id} | ${o.name} | ${o.payment} | 總數量: ${totalQty} | $${totalPrice} <span class="toggleDetails">[查看明細]</span>`;const detailsDiv=document.createElement("div");detailsDiv.className="orderDetails";detailsDiv.innerHTML=o.items.map(item=>`${item.name} x ${item.qty} - $${item.price*item.qty}`).join("<br>");li.appendChild(detailsDiv);li.querySelector(".toggleDetails").addEventListener("click",()=>{detailsDiv.style.display=detailsDiv.style.display==="none"?"block":"none";});ul.appendChild(li);});} else {ul.innerHTML="<li>尚無歷史訂單</li>";}}
+updateMemberUI();
 </script>
 
 </body>
 </html>
+
