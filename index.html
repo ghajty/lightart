@@ -1,3 +1,14 @@
+明白，我幫你生成一個 單檔 HTML 版本，整合你所有需求：
+	•	公司簡介按鈕
+	•	交易歷史按鈕
+	•	客服按鈕（Email / LINE / 電話）
+	•	購物車可增減數量、刪除商品、繼續加商品
+	•	下單資料表單只在點「確認下單」才出現
+	•	會員系統
+	•	後台管理隱藏（透過 ?admin=true 顯示）
+
+以下是完整程式碼：
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -6,9 +17,12 @@
 <title>貓貓燈具</title>
 <style>
 body {margin:0; font-family:Arial,sans-serif; background:#f5f5f5; color:#333;}
-header{background:#fff; display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid #ddd; position:fixed; top:0; left:0; width:100%; z-index:1000;}
+header{background:#fff; display:flex; align-items:center; justify-content:space-between; padding:10px 20px; border-bottom:1px solid #ddd; position:fixed; top:0; left:0; width:100%; z-index:1000;}
+header-left{display:flex; align-items:center;}
 header img{width:50px;height:50px;border-radius:50%;}
 header h1{margin:0 20px; font-size:1.8em; color:#333;}
+header .top-buttons button{margin-left:5px; padding:5px 10px; border:none; border-radius:5px; background:#333; color:#fff; cursor:pointer;}
+header .top-buttons button:hover{background:#555;}
 .container{max-width:1000px; margin:100px auto 40px; padding:0 20px;}
 #categoryToggle{cursor:pointer; background:#333; color:#fff; padding:8px; border-radius:5px; width:140px; text-align:center; margin:10px 0;}
 #categoryToggle:hover{background:#555;}
@@ -21,22 +35,31 @@ header h1{margin:0 20px; font-size:1.8em; color:#333;}
 .product-card img{width:100%; height:180px; object-fit:cover; border-radius:5px;}
 .product-card h3{margin:10px 0 5px;}
 .product-card p{margin:0 0 10px;}
-.product-card button{padding:5px 10px; margin:2px; background:#333; border:none; border-radius:5px; color:#fff;}
+.product-card button{padding:5px 10px; margin:2px; background:#333; border:none; border-radius:5px; color:#fff; cursor:pointer;}
 .product-card button:hover{background:#555;}
 .side-panel{position:fixed; top:0; width:320px; height:100%; background:#fff; padding:20px; overflow-y:auto; border-left:1px solid #ddd; border-right:1px solid #ddd; transition: all 0.2s ease; z-index:950; display:none;}
 .overlay{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.2); z-index:900;}
 #orderModal{display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:20px; border-radius:10px; max-height:80%; overflow-y:auto; z-index:1001;}
 form{background:#fff; padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid #ddd;}
 form input, form select{width:100%; padding:8px; margin:5px 0 10px; border-radius:5px; border:1px solid #ccc; background:#fff; color:#333;}
-form button{width:100%; padding:10px; background:#333; border:none; border-radius:5px; font-weight:bold; color:#fff;}
+form button{width:100%; padding:10px; background:#333; border:none; border-radius:5px; font-weight:bold; color:#fff; cursor:pointer;}
 form button:hover{background:#555;}
+.cart-item{display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;}
+.cart-item button{padding:2px 5px; margin-left:2px;}
 </style>
 </head>
 <body>
 
 <header>
+<div style="display:flex; align-items:center;">
 <img src="https://placekitten.com/50/50" alt="公司頭貼">
 <h1>貓貓燈具</h1>
+</div>
+<div class="top-buttons">
+<button id="introBtn">公司簡介</button>
+<button id="historyBtn">交易歷史</button>
+<button id="contactBtn">客服</button>
+</div>
 </header>
 
 <div class="container">
@@ -56,16 +79,13 @@ form button:hover{background:#555;}
 </div>
 
 <!-- 側邊欄 -->
-<div id="historySide" class="side-panel">
-<h2>歷史訂單</h2>
-<ul id="historyListSide"></ul>
-<button id="closeHistoryBtn">關閉</button>
-</div>
+<div id="historySide" class="side-panel"><h2>歷史訂單</h2><ul id="historyListSide"></ul><button id="closeHistoryBtn">關閉</button></div>
+<div id="introSide" class="side-panel"><h2>公司簡介</h2><p>貓貓燈具專注於提供各式吊燈、壁燈、吸頂燈、投射燈、燈條與軌道燈，結合設計美感與功能性，為每個空間帶來光與溫度。</p><button id="closeIntroBtn">關閉</button></div>
+<div id="contactSide" class="side-panel"><h2>客服聯絡方式</h2><p>Email: support@catlamp.com</p><p>LINE: @catlamp</p><p>電話: 02-1234-5678</p><button id="closeContactBtn">關閉</button></div>
+
+<div id="checkoutSide" class="side-panel"></div>
 <div id="orderModal"></div>
 <div id="modalOverlay" class="overlay"></div>
-
-<!-- 下單表單（隱藏） -->
-<div id="checkoutSide" class="side-panel"></div>
 
 <script>
 // ===== 資料 =====
@@ -84,15 +104,59 @@ categoryToggle.addEventListener("click",()=>{if(categoryList.style.display==="fl
 categories.forEach(cat=>{const btn=document.createElement("button");btn.textContent=cat;btn.addEventListener("click",()=>{displayProducts(cat);categoryList.querySelectorAll("button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");});if(cat==="全部商品") btn.classList.add("active");categoryList.appendChild(btn);});
 
 // ===== 顯示商品 =====
-function displayProducts(filter="全部商品"){const list=document.getElementById("productList");list.innerHTML="";let filtered=filter==="全部商品"?products:products.filter(p=>p.category===filter);filtered.forEach(p=>{const div=document.createElement("div");div.className="product-card";div.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>${p.desc}</p><p>價格: $${p.price}</p><button onclick="openCheckout(${p.id})">下單</button>`;list.appendChild(div);});}
+function displayProducts(filter="全部商品"){const list=document.getElementById("productList");list.innerHTML="";let filtered=filter==="全部商品"?products:products.filter(p=>p.category===filter);filtered.forEach(p=>{const div=document.createElement("div");div.className="product-card";div.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>${p.desc}</p><p>價格: $${p.price}</p><button onclick="addToCart(${p.id})">加入購物車</button>`;list.appendChild(div);});}
 displayProducts();
 
-// ===== 下單流程 =====
-function openCheckout(productId){
+// ===== 購物車功能 =====
+function addToCart(productId){
   const product=products.find(p=>p.id===productId);
-  cart=[{...product, qty:1}];
+  const exist=cart.find(p=>p.id===product.id);
+  if(exist){exist.qty+=1;} else {cart.push({...product, qty:1});}
+  openCart();
+}
+
+function openCart(){
   const checkoutSide=document.getElementById("checkoutSide");
-  checkoutSide.innerHTML=`<h2>下單資料</h2><ul id="cartItems"><li>${product.name} x 1 - $${product.price}</li></ul>
+  renderCartItems();
+  checkoutSide.innerHTML+=`<button id="confirmCheckoutBtn">確認下單</button>`;
+  checkoutSide.style.display="block";document.getElementById("modalOverlay").style.display="block";
+
+  document.getElementById("confirmCheckoutBtn").addEventListener("click",()=>{
+    openCustomerForm();
+  });
+}
+
+function renderCartItems(){
+  const checkoutSide=document.getElementById("checkoutSide");
+  checkoutSide.innerHTML=`<h2>購物車</h2>`;
+  if(cart.length===0){checkoutSide.innerHTML+="<p>購物車空空如也</p>";return;}
+  cart.forEach((item,index)=>{
+    const div=document.createElement("div");div.className="cart-item";
+    div.innerHTML=`<span>${item.name} x ${item.qty} - $${item.price*item.qty}</span>
+    <div>
+    <button onclick="changeQty(${index},-1)">-</button>
+    <button onclick="changeQty(${index},1)">+</button>
+    <button onclick="removeItem(${index})">刪除</button>
+    </div>`;
+    checkoutSide.appendChild(div);
+  });
+}
+
+function changeQty(index, delta){
+  cart[index].qty+=delta;
+  if(cart[index].qty<1) cart[index].qty=1;
+  renderCartItems();
+  const confirmBtn=document.getElementById("confirmCheckoutBtn");
+  if(confirmBtn) checkoutSide.appendChild(confirmBtn);
+}
+
+function removeItem(index){cart.splice(index,1);renderCartItems();const confirmBtn=document.getElementById("confirmCheckoutBtn");if(confirmBtn) checkoutSide.appendChild(confirmBtn);}
+
+// ===== 顧客資料表單 =====
+function openCustomerForm(){
+  const checkoutSide=document.getElementById("checkoutSide");
+  checkoutSide.innerHTML+=`
+  <h2>下單資料</h2>
   <form id="checkoutForm">
   <input type="text" id="name" placeholder="姓名" required>
   <input type="tel" id="phone" placeholder="電話" required>
@@ -105,7 +169,6 @@ function openCheckout(productId){
   </select>
   <button type="submit">確認下單</button>
   </form>`;
-  checkoutSide.style.display="block";document.getElementById("modalOverlay").style.display="block";
 
   document.getElementById("checkoutForm").addEventListener("submit",e=>{
     e.preventDefault();
@@ -121,22 +184,19 @@ function renderHistorySide(){const ul=document.getElementById("historyListSide")
 function showOrderModal(order){const modal=document.getElementById("orderModal");modal.innerHTML="";order.items.forEach(it=>{const div=document.createElement("div");div.textContent=`${it.name} x ${it.qty} - $${it.price*it.qty}`;modal.appendChild(div);});modal.innerHTML+=`<button onclick="closeOrderModal()">關閉</button>`;modal.style.display="block";document.getElementById("modalOverlay").style.display="block";}
 function closeOrderModal(){document.getElementById("orderModal").style.display="none";document.getElementById("modalOverlay").style.display="none";}
 
+// ===== 側邊欄控制 =====
+document.getElementById("historyBtn").addEventListener("click",()=>{document.getElementById("historySide").style.display="block";document.getElementById("modalOverlay").style.display="block";});
+document.getElementById("closeHistoryBtn").addEventListener("click",()=>{document.getElementById("historySide").style.display="none";document.getElementById("modalOverlay").style.display="none";});
+document.getElementById("introBtn").addEventListener("click",()=>{document.getElementById("introSide").style.display="block";document.getElementById("modalOverlay").style.display="block";});
+document.getElementById("closeIntroBtn").addEventListener("click",()=>{document.getElementById("introSide").style.display="none";document.getElementById("modalOverlay").style.display="none";});
+document.getElementById("contactBtn").addEventListener("click",()=>{document.getElementById("contactSide").style.display="block";document.getElementById("modalOverlay").style.display="block";});
+document.getElementById("closeContactBtn").addEventListener("click",()=>{document.getElementById("contactSide").style.display="none";document.getElementById("modalOverlay").style.display="none";});
+document.getElementById("modalOverlay").addEventListener("click",()=>{document.getElementById("checkoutSide").style.display="none";document.getElementById("modalOverlay").style.display="none";document.getElementById("historySide").style.display="none";document.getElementById("introSide").style.display="none";document.getElementById("contactSide").style.display="none";document.getElementById("orderModal").style.display="none";});
+
 // ===== 後台管理隱藏 =====
 const adminForm=document.createElement("form");
 adminForm.innerHTML=`<h2>後台管理 - 商品新增/修改</h2>
 <input type="text" id="adminName" placeholder="商品名稱" required>
 <input type="text" id="adminCategory" placeholder="分類" required>
 <input type="number" id="adminPrice" placeholder="價格" required>
-<input type="text" id="adminImg" placeholder="圖片URL" required>
-<input type="text" id="adminDesc" placeholder="商品描述" required>
-<button type="submit">新增 / 更新商品</button>`;
-document.body.appendChild(adminForm);
-if(window.location.search.includes("admin=true")){adminForm.style.display="block";}else{adminForm.style.display="none";}
-adminForm.addEventListener("submit", e=>{e.preventDefault();const name=document.getElementById("adminName").value;const category=document.getElementById("adminCategory").value;const price=parseFloat(document.getElementById("adminPrice").value);const img=document.getElementById("adminImg").value;const desc=document.getElementById("adminDesc").value;const newId=products.length>0?Math.max(...products.map(p=>p.id))+1:1;products.push({id:newId,name,category,price,img,desc});displayProducts();adminForm.reset();alert("商品新增成功！");});
-
-// ===== localStorage 儲存會員 =====
-function updateMemberStorage(){let members=JSON.parse(localStorage.getItem("members"))||[];const idx=members.findIndex(m=>m.username===currentMember.username);if(idx>=0){members[idx]=currentMember;localStorage.setItem("members",JSON.stringify(members));}}
-
-</script>
-</body>
-</html>
+<input type="text
