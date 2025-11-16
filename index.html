@@ -335,6 +335,7 @@
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s;
+    pointer-events: auto; /* 確保可點擊 */
   }
   .member-btn:hover {
     background: #c0392b;
@@ -437,6 +438,8 @@
     <h1>貓貓燈具</h1>
     <div class="nav-links">
       <a id="aboutLink">公司簡介</a>
+      <!-- 新增會員登入/註冊按鈕 -->
+      <a id="memberToggleBtn" style="cursor:pointer;color:#333;">會員登入/註冊</a>
     </div>
     <div class="cart-icon" id="cartIcon">
       <i class="fas fa-shopping-cart"></i>
@@ -515,6 +518,11 @@
     let cart = JSON.parse(localStorage.getItem("catlamp_cart") || "[]");
     let currentUser = null;
     let isRegisterMode = false;
+
+    // 新增會員按鈕點擊事件，打開購物車側邊欄（會員系統區域）
+    document.getElementById("memberToggleBtn").onclick = () => {
+      document.getElementById("cartSidebar").classList.add("open");
+    };
 
     // 關閉彈窗
     function closeModal(id) {
