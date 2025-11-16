@@ -116,7 +116,7 @@
   <h1>貓貓燈具</h1>
   <div class="nav-links">
     <a id="aboutLink">公司簡介</a>
-    <a id="contactLink">聯絡我們</a>
+    <!-- 聯絡我們已刪除 -->
   </div>
   <div class="cart-icon" id="cartIcon">
     <i class="fas fa-shopping-cart"></i>
@@ -133,27 +133,6 @@
     <span class="close-modal" onclick="closeModal('aboutModal')">×</span>
     <h2>公司簡介</h2>
     <p>貓貓燈具成立於2020年，專注北歐風與極簡設計燈飾，提供高品質、平價的居家照明方案。我們的產品通過國際安規認證，品質有保障。</p>
-  </div>
-</div>
-
-<!-- 聯絡我們彈窗 -->
-<div class="modal" id="contactModal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeModal('contactModal')">×</span>
-    <h2>聯絡我們</h2>
-    <div class="form-group">
-      <label>姓名</label>
-      <input type="text" placeholder="請輸入姓名">
-    </div>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" placeholder="請輸入 Email">
-    </div>
-    <div class="form-group">
-      <label>訊息</label>
-      <textarea rows="4" placeholder="請輸入您的問題"></textarea>
-    </div>
-    <button class="member-btn" onclick="alert('已送出訊息！我們會盡快回覆。')">送出</button>
   </div>
 </div>
 
@@ -225,7 +204,11 @@ function updateCartButton() {
 // 渲染分類
 function renderCategories() {
   const categories = new Set(["全部商品"]);
-  products.forEach(p => categories.add(p.category));
+  if (products.length > 0) {
+    products.forEach(p => {
+      if (p.category) categories.add(p.category);
+    });
+  }
   const list = document.getElementById("categoryList");
   list.innerHTML = "";
   Array.from(categories).sort().forEach(cat => {
@@ -405,7 +388,7 @@ document.getElementById('checkoutBtn').onclick = () => {
 // 開關購物車
 document.getElementById('cartIcon').onclick = () => {
   document.getElementById('cartSidebar').classList.add('open');
-  renderCart(); // 強制刷新
+  renderCart();
 };
 document.getElementById('closeCart').onclick = () => {
   document.getElementById('cartSidebar').classList.remove('open');
@@ -413,7 +396,6 @@ document.getElementById('closeCart').onclick = () => {
 
 // 彈窗控制
 document.getElementById('aboutLink').onclick = () => openModal('aboutModal');
-document.getElementById('contactLink').onclick = () => openModal('contactModal');
 document.getElementById('csButton').onclick = () => openModal('csModal');
 
 function openModal(id) {
@@ -428,13 +410,13 @@ fetch('products.json')
   })
   .then(data => {
     products = data;
-    renderCategories();
-    displayProducts();
+    renderCategories();   // 強制重新渲染分類
+    displayProducts();    // 顯示全部商品
     updateCartButton();
   })
   .catch(err => {
     console.error(err);
-    document.getElementById('productList').innerHTML = '<p style="color:red;text-align:center;">載入產品失敗，請檢查 products.json</p>';
+    document.getElementById('productList').innerHTML = '<p style="color:red;text-align:center;">載入產品失敗，請檢查 products.json 是否存在</p>';
   });
 </script>
 
