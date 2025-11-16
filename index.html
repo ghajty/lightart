@@ -133,7 +133,7 @@ form button:hover{background:#555;}
 
   <button id="cartToggleBtn" style="display:none;">開啟購物車</button>
 
-  <div id="categoryToggle">顯示分類 [Down Arrow]</div>
+  <div id="categoryToggle">顯示分類 ▼</div>
   <div id="categoryList"></div>
 
   <div class="products" id="productList"></div>
@@ -177,7 +177,7 @@ form button:hover{background:#555;}
 <script>
 const products = [
   {id:1,name:"現代吊燈A",category:"吊燈",price:2500,img:"https://placekitten.com/300/180",desc:"適合客廳使用"},
-  {id:2 dotychczas,name:"復古壁燈B",category:"壁燈",price:1200,img:"https://placekitten.com/301/180",desc:"適合走廊或臥室"},
+  {id:2,name:"復古壁燈B",category:"壁燈",price:1200,img:"https://placekitten.com/301/180",desc:"適合走廊或臥室"},
   {id:3,name:"吸頂燈C",category:"吸頂燈",price:1800,img:"https://placekitten.com/302/180",desc:"節能又明亮"},
   {id:4,name:"投射燈D",category:"投射燈",price:900,img:"https://placekitten.com/303/180",desc:"可調整方向"},
   {id:5,name:"燈條E",category:"燈條",price:600,img:"https://placekitten.com/304/180",desc:"裝飾性強"},
@@ -207,13 +207,37 @@ const memberForm = document.getElementById("memberForm");
 const historyListSide = document.getElementById("historyListSide");
 
 // 初始化
-updateCartButton();
-updateMemberUI();
-renderCategories();
-displayProducts();
-renderHistory();
+function updateCartButton() {
+  cartToggleBtn.style.display = cart.length > 0 ? "inline-block" : "none";
+}
 
-// === 產品顯示 ===
+function updateMemberUI() {
+  if (currentMember) {
+    welcomeMsg.textContent = `歡迎，${currentMember.username}！`;
+    logoutBtn.style.display = "inline-block";
+    memberForm.style.display = "none";
+  } else {
+    welcomeMsg.textContent = "";
+    logoutBtn.style.display = "none";
+    memberForm.style.display = "block";
+  }
+  renderHistory();
+}
+
+function renderCategories() {
+  categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    btn.addEventListener("click", () => {
+      displayProducts(cat);
+      categoryList.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+    if (cat === "全部商品") btn.classList.add("active");
+    categoryList.appendChild(btn);
+  });
+}
+
 function displayProducts(filter = "全部商品") {
   productList.innerHTML = "";
   const filtered = filter === "全部商品" ? products : products.filter(p => p.category === filter);
@@ -231,27 +255,35 @@ function displayProducts(filter = "全部商品") {
   });
 }
 
-function renderCategories() {
-  categories.forEach(cat => {
-    const btn = document.createElement("button");
-    btn.textContent = cat;
-    btn.addEventListener("click", () => {
-      displayProducts(cat);
-      categoryList.querySelectorAll("button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+function renderHistory() {
+  historyListSide.innerHTML = "";
+  const userOrders = currentMember ? orderHistory.filter(o => o.member === currentMember.username) : [];
+  if (userOrders.length === 0) {
+    historyListSide.innerHTML = "<li style='color:#999; text-align:center; padding:20px;'>尚無訂單紀錄</li>";
+  } else {
+    userOrders.forEach(order => {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${order.date}</strong><br>訂單編號: ${order.id}<br>總金額: $${order.total}<br><small>${order.items.map(i=>`${i.name} x${i.qty}`).join(', ')}</small>`;
+      historyListSide.appendChild(li);
     });
-    if (cat === "全部商品") btn.classList.add("active");
-    categoryList.appendChild(btn);
-  });
+  }
 }
 
+// 初始化調用
+updateCartButton();
+updateMemberUI();
+renderCategories();
+displayProducts();
+renderHistory();
+
+// 分類切換
 document.getElementById("categoryToggle").addEventListener("click", () => {
   const isFlex = categoryList.style.display === "flex";
   categoryList.style.display = isFlex ? "none" : "flex";
-  document.getElementById("categoryToggle").textContent = isFlex ? "顯示分類 [Down Arrow]" : "隱藏分類 [Up Arrow]";
+  document.getElementById("categoryToggle").textContent = isFlex ? "顯示分類 ▼" : "隱藏分類 ▲";
 });
 
-// === 購物車系統 ===
+// 購物車系統
 function addToCart(id) {
   const p = products.find(p => p.id === id);
   const exist = cart.find(c => c.id === id);
@@ -262,10 +294,6 @@ function addToCart(id) {
   openCart();
 }
 
-function updateCartButton() {
-  cartToggleBtn.style.display = cart.length > 0 ? "inline-block" : "none";
-}
-
 function openCart() {
   renderCart();
   checkoutSide.style.display = "block";
@@ -274,7 +302,6 @@ function openCart() {
 
 function renderCart() {
   checkoutSide.innerHTML = '';
-
   // 標題列
   const header = document.createElement('div');
   header.className = 'cart-header';
@@ -285,11 +312,9 @@ function renderCart() {
     </div>
   `;
   checkoutSide.appendChild(header);
-
   // 內容區
   const content = document.createElement('div');
   content.className = 'cart-content';
-
   if (cart.length === 0) {
     content.innerHTML = "<p style='text-align:center; color:#999; margin:20px 0;'>購物車空空如也</p>";
   } else {
@@ -311,7 +336,6 @@ function renderCart() {
       `;
       content.appendChild(div);
     });
-
     const totalDiv = document.createElement("div");
     totalDiv.style.cssText = "margin:20px 0 15px; padding-top:15px; border-top:2px solid #eee; font-size:1.1em; font-weight:bold; display:flex; justify-content:space-between; align-items:center;";
     totalDiv.innerHTML = `
@@ -320,12 +344,9 @@ function renderCart() {
     `;
     content.appendChild(totalDiv);
   }
-
   checkoutSide.appendChild(content);
-
   // 事件
   header.querySelector('#cartCloseBtn').onclick = closeAllPanels;
-
   checkoutSide.onclick = (e) => {
     const btn = e.target;
     const action = btn.dataset.action;
@@ -335,7 +356,6 @@ function renderCart() {
     if (action === 'inc') changeQty(i, 1);
     if (action === 'del') removeItem(i);
   };
-
   const checkoutBtn = content.querySelector('#checkoutBtn');
   if (checkoutBtn) {
     checkoutBtn.onclick = () => {
@@ -361,53 +381,34 @@ function renderCart() {
     };
   }
 }
-
 function changeQty(i, d) {
   cart[i].qty += d;
   if (cart[i].qty < 1) cart[i].qty = 1;
   saveCart();
   renderCart();
 }
-
 function removeItem(i) {
   cart.splice(i, 1);
   saveCart();
   updateCartButton();
   renderCart();
 }
-
 function saveCart() {
   localStorage.setItem('catlamp_cart', JSON.stringify(cart));
 }
 
-// === 會員系統 ===
-function updateMemberUI() {
-  if (currentMember) {
-    welcomeMsg.textContent = `歡迎，${currentMember.username}！`;
-    logoutBtn.style.display = "inline-block";
-    memberForm.style.display = "none";
-  } else {
-    welcomeMsg.textContent = "";
-    logoutBtn.style.display = "none";
-    memberForm.style.display = "block";
-  }
-  renderHistory();
-}
-
+// 會員系統
 memberForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const username = document.getElementById('memberUsername').value.trim();
   const password = document.getElementById('memberPassword').value;
   const email = document.getElementById('memberEmail').value.trim();
-
   if (!username || !password) {
     alert("請輸入帳號與密碼");
     return;
   }
-
   const members = JSON.parse(localStorage.getItem('catlamp_members') || '[]');
   const existing = members.find(m => m.username === username);
-
   if (existing) {
     if (existing.password !== password) {
       alert("密碼錯誤！");
@@ -423,34 +424,17 @@ memberForm.addEventListener('submit', (e) => {
     localStorage.setItem('catlamp_members', JSON.stringify(members));
     currentMember = { username, email };
   }
-
   localStorage.setItem('catlamp_member', JSON.stringify(currentMember));
   updateMemberUI();
   alert(existing ? "登入成功！" : "註冊成功！");
 });
-
 logoutBtn.addEventListener('click', () => {
   currentMember = null;
   localStorage.removeItem('catlamp_member');
   updateMemberUI();
 });
 
-// === 歷史訂單 ===
-function renderHistory() {
-  historyListSide.innerHTML = "";
-  const userOrders = currentMember ? orderHistory.filter(o => o.member === currentMember.username) : [];
-  if (userOrders.length === 0) {
-    historyListSide.innerHTML = "<li style='color:#999; text-align:center; padding:20px;'>尚無訂單紀錄</li>";
-  } else {
-    userOrders.forEach(order => {
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${order.date}</strong><br>訂單編號: ${order.id}<br>總金額: $${order.total}<br><small>${order.items.map(i=>`${i.name} x${i.qty}`).join(', ')}</small>`;
-      historyListSide.appendChild(li);
-    });
-  }
-}
-
-// === 側邊欄控制 ===
+// 側邊欄控制
 cartToggleBtn.addEventListener('click', openCart);
 introBtn.addEventListener('click', () => openPanel(introSide));
 historyBtn.addEventListener('click', () => openPanel(historySide));
@@ -477,6 +461,5 @@ window.addEventListener('load', () => {
   if (cart.length > 0) updateCartButton();
 });
 </script>
-
 </body>
 </html>
