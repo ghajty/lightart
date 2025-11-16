@@ -7,9 +7,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   * {margin:0; padding:0; box-sizing:border-box;}
-  body {font-family:Arial,sans-serif; background:#f4f4f4; color:#333; padding-top:env(safe-area-inset-top,0px);}
+  body {font-family:Arial,sans-serif; background:#f4f4f4; color:#333; padding-top:env(safe-area-inset-top,0px); padding-bottom:70px;}
   header {background:#fff; padding:15px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,0.1); position:sticky; top:0; z-index:100; display:flex; justify-content:space-between; align-items:center;}
   header h1 {font-size:1.5em; color:#222; margin-left:15px;}
+  .nav-links {display:flex; gap:15px; margin-right:15px; font-size:0.9em;}
+  .nav-links a {color:#333; text-decoration:none;}
+  .nav-links a:hover {color:#e74c3c;}
   .cart-icon {position:relative; margin-right:20px; cursor:pointer; font-size:1.4em; color:#333;}
   .cart-count {position:absolute; top:-8px; right:-8px; background:#e74c3c; color:#fff; font-size:0.7em; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center;}
   .category-list {display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px 0; padding:0 15px;}
@@ -59,18 +62,29 @@
   .checkout-btn {margin-top:15px; padding:12px; background:#333; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:1em;}
   .checkout-btn:hover {background:#555;}
 
-  /* 結帳表單 */
-  .checkout-form {
-    margin-top:30px; padding-top:20px; border-top:1px solid #eee;
-  }
-  .checkout-form h3 {margin-bottom:15px; font-size:1.1em;}
+  /* 會員系統 */
+  .member-section {margin-top:20px; padding-top:20px; border-top:1px solid #eee;}
+  .member-section h3 {margin-bottom:15px; font-size:1.1em;}
   .form-group {margin-bottom:15px;}
   .form-group label {display:block; margin-bottom:5px; font-size:0.9em;}
-  .form-group input, .form-group textarea {
-    width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:0.95em;
+  .form-group input {width:100%; padding:10px; border:1px solid #ddd; border-radius:6px; font-size:0.95em;}
+  .member-btn {width:100%; margin-top:10px; padding:10px; background:#e74c3c; color:#fff; border:none; border-radius:6px; cursor:pointer;}
+  .member-btn:hover {background:#c0392b;}
+  .logout-btn {background:#999; margin-top:5px;}
+  .logout-btn:hover {background:#777;}
+
+  /* 歷史訂單 */
+  .order-history {margin-top:20px; display:none;}
+  .order-history h3 {margin-bottom:10px;}
+  .order-item {background:#f9f9f9; padding:12px; border-radius:6px; margin-bottom:10px; font-size:0.9em;}
+
+  /* 客服按鈕 */
+  .cs-button {
+    position:fixed; bottom:20px; right:20px; width:56px; height:56px; background:#333; color:#fff;
+    border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5em;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2); cursor:pointer; z-index:999;
   }
-  .submit-order {width:100%; margin-top:20px; padding:12px; background:#e74c3c; color:#fff; border:none; border-radius:6px; cursor:pointer; font-size:1em;}
-  .submit-order:hover {background:#c0392b;}
+  .cs-button:hover {background:#555; transform:scale(1.1);}
 
   /* 手機版 */
   @media (max-width:768px) {
@@ -79,7 +93,7 @@
     .product-card h3 {font-size:1em;}
     .product-card button {padding:6px 12px; font-size:0.85em;}
     header h1 {font-size:1.3em;}
-    .category-list button {padding:6px 12px; font-size:0.8em;}
+    .nav-links {font-size:0.8em; gap:8px;}
     .cart-sidebar {width:100%; right:-100%;}
   }
 </style>
@@ -88,6 +102,10 @@
 
 <header>
   <h1>貓貓燈具</h1>
+  <div class="nav-links">
+    <a href="#about">公司簡介</a>
+    <a href="#contact">聯絡我們</a>
+  </div>
   <div class="cart-icon" id="cartIcon">
     <i class="fas fa-shopping-cart"></i>
     <span class="cart-count" id="cartCount">0</span>
@@ -96,6 +114,17 @@
 
 <div class="category-list" id="categoryList"></div>
 <div class="products" id="productList"><p>載入中...</p></div>
+
+<!-- 公司簡介 -->
+<div id="about" style="padding:30px 20px; background:#fff; margin:20px; border-radius:10px; display:none;">
+  <h2>公司簡介</h2>
+  <p>貓貓燈具成立於2020年，專注北歐風與極簡設計燈飾，提供高品質、平價的居家照明方案。</p>
+</div>
+
+<!-- 客服浮動按鈕 -->
+<div class="cs-button" onclick="alert('客服電話：02-1234-5678\nLine ID：@catlamp')">
+  <i class="fas fa-headset"></i>
+</div>
 
 <!-- 購物車側邊欄 -->
 <div class="cart-sidebar" id="cartSidebar">
@@ -107,8 +136,9 @@
   <div class="cart-total">總計: <span id="cartTotal">$0</span></div>
   <button class="checkout-btn" id="checkoutBtn">結帳</button>
 
-  <div class="checkout-form" id="checkoutForm" style="display:none;">
-    <h3>會員系統</h3>
+  <!-- 會員系統 -->
+  <div class="member-section" id="memberSection">
+    <h3 id="memberTitle">會員登入</h3>
     <div class="form-group">
       <label>帳號</label>
       <input type="text" id="account" placeholder="請輸入帳號">
@@ -117,17 +147,20 @@
       <label>密碼</label>
       <input type="password" id="password" placeholder="請輸入密碼">
     </div>
-    <div class="form-group">
-      <label>Email (註冊用)</label>
-      <input type="email" id="email" placeholder="選填">
-    </div>
-    <button class="submit-order" id="submitOrder">送出訂單</button>
+    <button class="member-btn" id="memberBtn">登入</button>
+  </div>
+
+  <!-- 歷史訂單 -->
+  <div class="order-history" id="orderHistory">
+    <h3>歷史訂單</h3>
+    <div id="orderList">尚未登入</div>
   </div>
 </div>
 
 <script>
 let products = [];
 let cart = JSON.parse(localStorage.getItem('catlamp_cart') || '[]');
+let currentUser = null;
 
 // 更新購物車圖示
 function updateCartButton() {
@@ -238,6 +271,77 @@ window.changeQty = function(id, delta) {
   renderCart();
 };
 
+// 會員系統
+document.getElementById('memberBtn').onclick = () => {
+  const account = document.getElementById('account').value.trim();
+  const password = document.getElementById('password').value;
+  if (!account || !password) return alert('請填寫完整！');
+
+  if (account === 'admin' && password === '1234') {
+    currentUser = {account};
+    document.getElementById('memberTitle').textContent = `歡迎，${account}`;
+    document.getElementById('memberBtn').textContent = '登出';
+    document.getElementById('memberBtn').className = 'member-btn logout-btn';
+    document.getElementById('orderHistory').style.display = 'block';
+    renderOrders();
+  } else {
+    alert('帳號或密碼錯誤！');
+  }
+};
+
+// 登出
+document.getElementById('memberBtn').addEventListener('click', function() {
+  if (this.textContent === '登出') {
+    currentUser = null;
+    this.textContent = '登入';
+    this.className = 'member-btn';
+    document.getElementById('memberTitle').textContent = '會員登入';
+    document.getElementById('account').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('orderHistory').style.display = 'none';
+  }
+});
+
+// 歷史訂單
+function renderOrders() {
+  const list = document.getElementById('orderList');
+  const orders = JSON.parse(localStorage.getItem('catlamp_orders') || '[]');
+  if (orders.length === 0) {
+    list.innerHTML = '<p style="color:#999;">無訂單紀錄</p>';
+    return;
+  }
+  list.innerHTML = '';
+  orders.forEach(o => {
+    const div = document.createElement('div');
+    div.className = 'order-item';
+    div.innerHTML = `<strong>訂單 ${o.id}</strong><br>時間: ${o.time}<br>總額: $${o.total}`;
+    list.appendChild(div);
+  });
+}
+
+// 結帳
+document.getElementById('checkoutBtn').onclick = () => {
+  if (cart.length === 0) return alert('購物車是空的！');
+  if (!currentUser) return alert('請先登入會員！');
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const order = {
+    id: Date.now().toString().slice(-6),
+    time: new Date().toLocaleString('zh-TW'),
+    total,
+    items: [...cart]
+  };
+  const orders = JSON.parse(localStorage.getItem('catlamp_orders') || '[]');
+  orders.push(order);
+  localStorage.setItem('catlamp_orders', JSON.stringify(orders));
+
+  alert(`訂單已送出！\n訂單編號: ${order.id}\n總金額: $${total}`);
+  cart = [];
+  localStorage.setItem('catlamp_cart', '[]');
+  updateCartButton();
+  renderCart();
+};
+
 // 開關購物車
 document.getElementById('cartIcon').onclick = () => {
   document.getElementById('cartSidebar').classList.add('open');
@@ -247,23 +351,11 @@ document.getElementById('closeCart').onclick = () => {
   document.getElementById('cartSidebar').classList.remove('open');
 };
 
-// 結帳
-document.getElementById('checkoutBtn').onclick = () => {
-  document.getElementById('checkoutForm').style.display = 'block';
-};
-document.getElementById('submitOrder').onclick = () => {
-  const account = document.getElementById('account').value.trim();
-  const password = document.getElementById('password').value;
-  if (!account || !password) {
-    alert('請填寫帳號與密碼！');
-    return;
-  }
-  alert(`訂單已送出！\n總金額: ${document.getElementById('cartTotal').textContent}\n感謝購買！`);
-  cart = [];
-  localStorage.setItem('catlamp_cart', '[]');
-  updateCartButton();
-  renderCart();
-  document.getElementById('checkoutForm').style.display = 'none';
+// 顯示公司簡介
+document.querySelector('a[href="#about"]').onclick = (e) => {
+  e.preventDefault();
+  document.getElementById('about').style.display = 'block';
+  setTimeout(() => window.scrollTo(0, document.getElementById('about').offsetTop - 100), 100);
 };
 
 // 載入產品
