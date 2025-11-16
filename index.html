@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>貓貓燈具</title>
 <style>
-/* === 樣式不變 === */
 html, body {margin:0; padding:0; font-family:Arial,sans-serif; background:#f5f5f5; color:#333; min-height:100dvh; padding-top:env(safe-area-inset-top,0px);}
 body {box-sizing:border-box;}
 header {position:fixed; top:0; left:0; width:100%; background:#fff; display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid #ddd; z-index:1000; box-shadow:0 1px 5px rgba(0,0,0,0.1);}
@@ -79,11 +78,10 @@ form button:hover{background:#555;}
     <input type="text" id="memberUsername" placeholder="帳號" required>
     <input type="password" id="memberPassword" placeholder="密碼" required>
     <input type="email" id="memberEmail" placeholder="Email (註冊用)">
-    <button type="submit" id="memberBtn">註冊 / 登入</button>
+    <button type="submit">註冊 / 登入</button>
   </form>
 </div>
 
-<!-- 側邊欄 -->
 <div id="introSide" class="side-panel"><h2>公司簡介</h2><p>貓貓燈具專注於提供各式吊燈、壁燈、吸頂燈、投射燈、燈條與軌道燈，結合設計美感與功能性，為每個空間帶來光與溫度。</p><button id="closeIntroBtn">關閉</button></div>
 <div id="historySide" class="side-panel"><h2>歷史訂單</h2><ul id="historyListSide"></ul><button id="closeHistoryBtn">關閉</button></div>
 <div id="contactSide" class="side-panel"><h2>客服聯絡方式</h2><p>Email: support@catlamp.com</p><p>LINE: @catlamp</p><p>電話: 02-1234-5678</p><button id="closeContactBtn">關閉</button></div>
@@ -91,88 +89,76 @@ form button:hover{background:#555;}
 <div id="modalOverlay" class="overlay"></div>
 
 <script>
-// === 主要資料 ===
+// === 全域變數 ===
 let cart = JSON.parse(localStorage.getItem('catlamp_cart')) || [];
 let currentMember = JSON.parse(localStorage.getItem('catlamp_member')) || null;
 let orderHistory = JSON.parse(localStorage.getItem('catlamp_history')) || [];
 
-// DOM
-const productList = document.getElementById("productList");
-const categoryList = document.getElementById("categoryList");
-const cartToggleBtn = document.getElementById("cartToggleBtn");
-const checkoutSide = document.getElementById("checkoutSide");
-const modalOverlay = document.getElementById("modalOverlay");
-const introBtn = document.getElementById("introBtn");
-const historyBtn = document.getElementById("historyBtn");
-const contactBtn = document.getElementById("contactBtn");
-const introSide = document.getElementById("introSide");
-const historySide = document.getElementById("historySide");
-const contactSide = document.getElementById("contactSide");
-const welcomeMsg = document.getElementById("welcomeMsg");
-const logoutBtn = document.getElementById("logoutBtn");
-const memberForm = document.getElementById("memberForm");
-const historyListSide = document.getElementById("historyListSide");
-
-// 初始化
-updateCartButton();
-updateMemberUI();
-
-// === 關閉所有面板（修復點擊穿透）===
-function closeAllPanels() {
-  document.querySelectorAll('.side-panel').forEach(p => p.style.display = 'none');
-  modalOverlay.style.display = 'none';
-}
-
-// === 開啟面板 ===
-function openPanel(panel) {
-  closeAllPanels();
-  panel.style.display = "block";
-  modalOverlay.style.display = "block";
-}
-
-// === 事件綁定（使用 addEventListener，穩定）===
+// === DOM 元素 ===
+const elements = {};
 document.addEventListener('DOMContentLoaded', () => {
-  // 側邊欄按鈕
-  document.getElementById('introBtn').addEventListener('click', () => openPanel(introSide));
-  document.getElementById('historyBtn').addEventListener('click', () => openPanel(historySide));
-  document.getElementById('contactBtn').addEventListener('click', () => openPanel(contactSide));
-  document.getElementById('cartToggleBtn').addEventListener('click', openCart);
+  elements.productList = document.getElementById("productList");
+  elements.categoryList = document.getElementById("categoryList");
+  elements.cartToggleBtn = document.getElementById("cartToggleBtn");
+  elements.checkoutSide = document.getElementById("checkoutSide");
+  elements.modalOverlay = document.getElementById("modalOverlay");
+  elements.introBtn = document.getElementById("introBtn");
+  elements.historyBtn = document.getElementById("historyBtn");
+  elements.contactBtn = document.getElementById("contactBtn");
+  elements.introSide = document.getElementById("introSide");
+  elements.historySide = document.getElementById("historySide");
+  elements.contactSide = document.getElementById("contactSide");
+  elements.welcomeMsg = document.getElementById("welcomeMsg");
+  elements.logoutBtn = document.getElementById("logoutBtn");
+  elements.memberForm = document.getElementById("memberForm");
+  elements.historyListSide = document.getElementById("historyListSide");
+  elements.categoryToggle = document.getElementById("categoryToggle");
 
-  // 關閉按鈕（z-index 最高，強制點擊）
-  document.getElementById('closeIntroBtn').addEventListener('click', closeAllPanels);
-  document.getElementById('closeHistoryBtn').addEventListener('click', closeAllPanels);
-  document.getElementById('closeContactBtn').addEventListener('click', closeAllPanels);
+  // 初始化
+  updateCartButton();
+  updateMemberUI();
+  initEvents();
+});
 
-  // 背景點擊關閉
-  modalOverlay.addEventListener('click', closeAllPanels);
+function initEvents() {
+  // 頂部按鈕
+  elements.introBtn.onclick = () => openPanel(elements.introSide);
+  elements.historyBtn.onclick = () => openPanel(elements.historySide);
+  elements.contactBtn.onclick = () => openPanel(elements.contactSide);
+  elements.cartToggleBtn.onclick = openCart;
 
-  // 會員表單（完整邏輯）
-  memberForm.addEventListener('submit', (e) => {
+  // 關閉按鈕
+  document.getElementById('closeIntroBtn').onclick = closeAllPanels;
+  document.getElementById('closeHistoryBtn').onclick = closeAllPanels;
+  document.getElementById('closeContactBtn').onclick = closeAllPanels;
+  elements.modalOverlay.onclick = closeAllPanels;
+
+  // 分類切換
+  elements.categoryToggle.onclick = () => {
+    const list = elements.categoryList;
+    const isFlex = list.style.display === 'flex';
+    list.style.display = isFlex ? 'none' : 'flex';
+    elements.categoryToggle.textContent = isFlex ? '顯示分類 ▼' : '隱藏分類 ▲';
+  };
+
+  // 會員表單
+  elements.memberForm.onsubmit = (e) => {
     e.preventDefault();
     const username = document.getElementById('memberUsername').value.trim();
     const password = document.getElementById('memberPassword').value;
     const email = document.getElementById('memberEmail').value.trim();
 
-    if (!username || !password) {
-      alert('請輸入帳號和密碼！');
-      return;
-    }
+    if (!username || !password) return alert('請輸入帳號和密碼！');
 
     const members = JSON.parse(localStorage.getItem('catlamp_members') || '[]');
-    const exist =388 members.find(m => m.username === username);
+    const exist = members.find(m => m.username === username);
 
     if (exist) {
-      if (exist.password !== password) {
-        alert('密碼錯誤！');
-        return;
-      }
+      if (exist.password !== password) return alert('密碼錯誤！');
       currentMember = { username, email: exist.email };
       alert('登入成功！');
     } else {
-      if (!email) {
-        alert('註冊需填寫 Email！');
-        return;
-      }
+      if (!email) return alert('註冊需填寫 Email！');
       members.push({ username, password, email });
       localStorage.setItem('catlamp_members', JSON.stringify(members));
       currentMember = { username, email };
@@ -181,23 +167,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     localStorage.setItem('catlamp_member', JSON.stringify(currentMember));
     updateMemberUI();
-  });
+  };
 
-  // 登出
-  logoutBtn.addEventListener('click', () => {
+  elements.logoutBtn.onclick = () => {
     currentMember = null;
     localStorage.removeItem('catlamp_member');
     updateMemberUI();
-  });
-});
+  };
+}
+
+// === 面板控制 ===
+function openPanel(panel) {
+  closeAllPanels();
+  panel.style.display = "block";
+  elements.modalOverlay.style.display = "block";
+}
+function closeAllPanels() {
+  document.querySelectorAll('.side-panel').forEach(p => p.style.display = 'none');
+  elements.modalOverlay.style.display = 'none';
+}
 
 // === 購物車 ===
 function renderCart() {
-  checkoutSide.innerHTML = '';
+  const side = elements.checkoutSide;
+  side.innerHTML = '';
   const header = document.createElement('div');
   header.className = 'cart-header';
   header.innerHTML = `<div style="display:flex; justify-content:space-between;"><span>購物車 (${cart.length})</span><button id="cartCloseBtn" style="background:none;border:none;font-size:1.5em;cursor:pointer;color:#999;">×</button></div>`;
-  checkoutSide.appendChild(header);
+  side.appendChild(header);
 
   const content = document.createElement('div');
   content.className = 'cart-content';
@@ -228,67 +225,67 @@ function renderCart() {
     totalDiv.innerHTML = `<span>總計：$${total}</span><button id="checkoutBtn" style="padding:10px 16px; background:#e74c3c; color:white; border:none; border-radius:6px;">結帳</button>`;
     content.appendChild(totalDiv);
   }
-  checkoutSide.appendChild(content);
+  side.appendChild(content);
 
-  // 事件
-  header.querySelector('#cartCloseBtn').addEventListener('click', closeAllPanels);
-  checkoutSide.addEventListener('click', (e) => {
+  header.querySelector('#cartCloseBtn').onclick = closeAllPanels;
+  side.onclick = (e) => {
     const btn = e.target;
     const i = parseInt(btn.dataset.index);
     if (isNaN(i)) return;
     if (btn.dataset.action === 'dec') changeQty(i, -1);
     if (btn.dataset.action === 'inc') changeQty(i, 1);
     if (btn.dataset.action === 'del') removeItem(i);
-  });
+  };
   const checkoutBtn = content.querySelector('#checkoutBtn');
-  if (checkoutBtn) checkoutBtn.addEventListener('click', doCheckout);
+  if (checkoutBtn) checkoutBtn.onclick = doCheckout;
 }
 
 function openCart() {
   renderCart();
-  checkoutSide.style.display = "block";
-  modalOverlay.style.display = "block";
+  elements.checkoutSide.style.display = "block";
+  elements.modalOverlay.style.display = "block";
 }
 
 function updateCartButton() {
-  cartToggleBtn.style.display = cart.length > 0 ? "inline-block" : "none";
+  elements.cartToggleBtn.style.display = cart.length > 0 ? "inline-block" : "none";
 }
 function updateMemberUI() {
   if (currentMember) {
-    welcomeMsg.textContent = `歡迎，${currentMember.username}！`;
-    logoutBtn.style.display = "inline-block";
-    memberForm.style.display = "none";
+    elements.welcomeMsg.textContent = `歡迎，${currentMember.username}！`;
+    elements.logoutBtn.style.display = "inline-block";
+    elements.memberForm.style.display = "none";
   } else {
-    welcomeMsg.textContent = "";
-    logoutBtn.style.display = "none";
-    memberForm.style.display = "block";
+    elements.welcomeMsg.textContent = "";
+    elements.logoutBtn.style.display = "none";
+    elements.memberForm.style.display = "block";
   }
   renderHistory();
 }
 function renderHistory() {
-  historyListSide.innerHTML = "";
+  elements.historyListSide.innerHTML = "";
   const userOrders = currentMember ? orderHistory.filter(o => o.member === currentMember.username) : [];
   if (userOrders.length === 0) {
-    historyListSide.innerHTML = "<li style='color:#999; text-align:center; padding:20px;'>尚無訂單紀錄</li>";
+    elements.historyListSide.innerHTML = "<li style='color:#999; text-align:center; padding:20px;'>尚無訂單紀錄</li>";
   } else {
     userOrders.forEach(order => {
       const li = document.createElement("li");
       li.innerHTML = `<strong>${order.date}</strong><br>訂單編號: ${order.id}<br>總金額: $${order.total}<br><small>${order.items.map(i=>`${i.name} x${i.qty}`).join(', ')}</small>`;
-      historyListSide.appendChild(li);
+      elements.historyListSide.appendChild(li);
     });
   }
 }
 function changeQty(i, d) { cart[i].qty = Math.max(1, cart[i].qty + d); saveCart(); renderCart(); }
 function removeItem(i) { cart.splice(i, 1); saveCart(); updateCartButton(); renderCart(); }
 function doCheckout() {
-  if (!currentMember) { alert("請先登入！"); return; }
+  if (!currentMember) return alert("請先登入！");
   const order = { id: Date.now(), date: new Date().toLocaleString('zh-TW'), items: [...cart], total: cart.reduce((s,c)=>s+c.price*c.qty,0), member: currentMember.username };
-  orderHistory.push(order); localStorage.setItem('catlamp_history', JSON.stringify(orderHistory));
+  orderHistory.push(order);
+  localStorage.setItem('catlamp_history', JSON.stringify(orderHistory));
   cart = []; saveCart(); updateCartButton(); renderHistory(); closeAllPanels(); alert("訂單已送出！");
 }
 function saveCart() { localStorage.setItem('catlamp_cart', JSON.stringify(cart)); }
 
-// === 載入產品 ===
+// === 外部載入產品 ===
 </script>
 
 <script src="load-products.js"></script>
@@ -298,5 +295,6 @@ function saveCart() { localStorage.setItem('catlamp_cart', JSON.stringify(cart))
     if (typeof displayProducts === 'function') displayProducts();
   });
 </script>
+
 </body>
 </html>
