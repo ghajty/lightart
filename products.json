@@ -5,11 +5,10 @@
     "category": "吊燈",
     "price": 2500,
     "imgs": [
-      "https://placekitten.com/300/180",
-      "https://placekitten.com/301/180",
-      "https://placekitten.com/302/180"
+      "https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=吊燈A",
+      "https://via.placeholder.com/300x300/4ECDC4/FFFFFF?text=細節1"
     ],
-    "desc": "適合客廳使用，支援調光"
+    "desc": "適合客廳使用"
   },
   {
     "id": 2,
@@ -17,8 +16,8 @@
     "category": "壁燈",
     "price": 1200,
     "imgs": [
-      "https://placekitten.com/303/180",
-      "https://placekitten.com/304/180"
+      "https://via.placeholder.com/300x300/45B7D1/FFFFFF?text=壁燈B",
+      "https://via.placeholder.com/300x300/96CEB4/FFFFFF?text=細節2"
     ],
     "desc": "適合走廊或臥室"
   },
@@ -28,9 +27,8 @@
     "category": "吸頂燈",
     "price": 1800,
     "imgs": [
-      "https://placekitten.com/305/180",
-      "https://placekitten.com/306/180",
-      "https://placekitten.com/307/180"
+      "https://via.placeholder.com/300x300/FFEAA7/FFFFFF?text=吸頂燈C",
+      "https://via.placeholder.com/300x300/DDA0DD/FFFFFF?text=細節3"
     ],
     "desc": "節能又明亮"
   },
@@ -40,10 +38,10 @@
     "category": "落地燈",
     "price": 3999,
     "imgs": [
-      "https://files.catbox.moe/suue5g.jpeg",
-      "https://files.catbox.moe/suue5g.jpeg",
-      "https://files.catbox.moe/suue5g.jpeg"
+      "https://via.placeholder.com/300x300/98D8C8/FFFFFF?text=落地燈",
+      "https://via.placeholder.com/300x300/F7DC6F/FFFFFF?text=細節4",
+      "https://via.placeholder.com/300x300/BB8FCE/FFFFFF?text=細節5"
     ],
-    "desc": "支援調光，極簡設計，北歐風"
+    "desc": "支援調光，極簡設計"
   }
 ]
