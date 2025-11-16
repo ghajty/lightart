@@ -13,11 +13,10 @@
   .product-gallery {margin-bottom:20px;}
   .main-img-container {position:relative; max-width:500px; margin:0 auto;}
   .main-img-container img {width:100%; height:auto; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);}
-Vectorizer
-  .prev-btn, .next-btn {position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; width:40px; height:40px; border-radius:50%; font-size:1.5em; cursor:pointer;}
+  .prev-btn, .next-btn {position:absolute; top:50%; transform:translateY(-50%); background:#333; color:white; border:none; width:40px; height:40px; border-radius:50%; font-size:1.5em; cursor:pointer;}
   .prev-btn {left:10px;}
   .next-btn {right:10px;}
-  .prev-btn:hover, .next-btn:hover {background:rgba(0,0,0,0.8);}
+  .prev-btn:hover, .next-btn:hover {background:#555;}
   .thumbnail-container {display:flex; gap:10px; margin-top:15px; justify-content:center; flex-wrap:wrap;}
   .thumbnail-container img {width:80px; height:80px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid #ddd; transition:border 0.3s;}
   .thumbnail-container img.active {border-color:#333;}
@@ -71,16 +70,13 @@ fetch('products.json')
     document.getElementById('detailPrice').textContent = `$${product.price}`;
     document.getElementById('detailDesc').textContent = product.desc;
 
-    // === 多圖輪播 ===
     let currentIndex = 0;
     const mainImg = document.getElementById('mainImg');
     const thumbnails = document.getElementById('thumbnails');
 
     function showImage(index) {
       mainImg.src = product.imgs[index];
-      thumbnails.querySelectorAll('img').forEach((t, i) => {
-        t.classList.toggle('active', i === index);
-      });
+      thumbnails.querySelectorAll('img').forEach((t, i) => t.classList.toggle('active', i === index));
     }
 
     product.imgs.forEach((img, i) => {
@@ -102,7 +98,6 @@ fetch('products.json')
       showImage(currentIndex);
     };
 
-    // === 加入購物車 ===
     document.getElementById('addToCartBtn').onclick = () => {
       let cart = JSON.parse(localStorage.getItem('catlamp_cart') || '[]');
       const exist = cart.find(x => x.id === product.id);
