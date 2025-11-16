@@ -67,12 +67,8 @@
   window.addToCart = function(id) {
     const p = products.find(x => x.id === id);
     if (!p) return;
-    let cart = JSON.parse(localStorage.getItem('catlamp_cart') || '[]');
     const exist = cart.find(x => x.id === id);
-    if (exist) exist.qty++;
-    else cart.push({...p, qty:1});
-    localStorage.setItem('catlamp_cart', JSON.stringify(cart));
-    if (typeof updateCartButton === 'function') updateCartButton();
-    if (typeof openCart === 'function') openCart();
+    if (exist) exist.qty++; else cart.push({...p, qty:1});
+    saveCart(); updateCartButton(); openCart();
   };
 })();
