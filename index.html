@@ -339,6 +339,15 @@ document.getElementById('closeContactBtn').onclick = closeAllPanels;
 function openPanel(p) { closeAllPanels(); p.style.display = "block"; modalOverlay.style.display = "block"; }
 function closeAllPanels() { document.querySelectorAll('.side-panel').forEach(p => p.style.display = 'none'); modalOverlay.style.display = 'none'; }
 modalOverlay.onclick = closeAllPanels;
+  </script>
+
+<script src="load-products.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 確保即使 fetch 失敗也能初始化
+    if (typeof renderCategories === 'function') renderCategories();
+    if (typeof displayProducts === 'function') displayProducts();
+  });
 </script>
 </body>
 </html>
