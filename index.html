@@ -35,6 +35,8 @@ form button{width:100%; padding:10px; background:#333; border:none; border-radiu
 form button:hover{background:#555;}
 .cart-item{display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;}
 .cart-item button{padding:2px 5px; margin-left:2px;}
+#cartToggleBtn{display:none; margin:10px 0; padding:5px 10px; border:none; border-radius:5px; background:#333; color:#fff; cursor:pointer;}
+#cartToggleBtn:hover{background:#555;}
 </style>
 </head>
 <body>
@@ -53,6 +55,8 @@ form button:hover{background:#555;}
 
 <div class="container">
 <div id="memberArea"><span id="welcomeMsg"></span><button id="logoutBtn" style="display:none;">登出</button></div>
+
+<button id="cartToggleBtn">開啟/關閉購物車</button>
 
 <div id="categoryToggle">顯示分類 ▼</div>
 <div id="categoryList"></div>
@@ -82,49 +86,122 @@ let products=[{id:1,name:"現代吊燈A",category:"吊燈",price:2500,img:"https
 const categories=["全部商品","吊燈","壁燈","吸頂燈","投射燈","燈條","軌道燈"];
 let cart=[], currentMember=null;
 
-// ===== 會員 =====
-function updateMemberUI(){const welcome=document.getElementById("welcomeMsg");const logoutBtn=document.getElementById("logoutBtn");const memberForm=document.getElementById("memberForm");if(currentMember){welcome.textContent=`歡迎，${currentMember.username}`;logoutBtn.style.display="inline-block";memberForm.style.display="none";cart=currentMember.cart||[];renderHistorySide();}else{welcome.textContent="";logoutBtn.style.display="none";memberForm.style.display="block";cart=[];renderHistorySide();}}
+// ===== 會員系統 =====
+function updateMemberUI(){
+  const welcome=document.getElementById("welcomeMsg");
+  const logoutBtn=document.getElementById("logoutBtn");
+  const memberForm=document.getElementById("memberForm");
+  const cartToggleBtn=document.getElementById("cartToggleBtn");
+  if(currentMember){
+    welcome.textContent=`歡迎，${currentMember.username}`;
+    logoutBtn.style.display="inline-block";
+    memberForm.style.display="none";
+    cart=currentMember.cart||[];
+    renderHistorySide();
+    // 顯示購物車按鈕僅當有訂單
+    cartToggleBtn.style.display=(currentMember.orders && currentMember.orders.length>0)?"inline-block":"none";
+  }else{
+    welcome.textContent="";
+    logoutBtn.style.display="none";
+    memberForm.style.display="block";
+    cart=[];
+    renderHistorySide();
+    cartToggleBtn.style.display="none";
+  }
+}
+
 document.getElementById("logoutBtn").addEventListener("click",()=>{currentMember=null;updateMemberUI();});
-document.getElementById("memberForm").addEventListener("submit",e=>{e.preventDefault();const u=document.getElementById("memberUsername").value;const p=document.getElementById("memberPassword").value;const em=document.getElementById("memberEmail").value;let members=JSON.parse(localStorage.getItem("members"))||[];let member=members.find(m=>m.username===u);if(member){if(member.password===p){currentMember=member;}else{alert("密碼錯誤");return;}}else{member={username:u,password:p,email:em,cart:[],orders:[]};members.push(member);localStorage.setItem("members",JSON.stringify(members));currentMember=member;}updateMemberUI();});
+document.getElementById("memberForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const u=document.getElementById("memberUsername").value;
+  const p=document.getElementById("memberPassword").value;
+  const em=document.getElementById("memberEmail").value;
+  let members=JSON.parse(localStorage.getItem("members"))||[];
+  let member=members.find(m=>m.username===u);
+  if(member){
+    if(member.password===p){currentMember=member;}
+    else{alert("密碼錯誤");return;}
+  }else{
+    member={username:u,password:p,email:em,cart:[],orders:[]};
+    members.push(member);
+    localStorage.setItem("members",JSON.stringify(members));
+    currentMember=member;
+  }
+  updateMemberUI();
+});
 
 // ===== 分類 =====
-const categoryToggle=document.getElementById("categoryToggle");const categoryList=document.getElementById("categoryList");
+const categoryToggle=document.getElementById("categoryToggle");
+const categoryList=document.getElementById("categoryList");
 categoryToggle.addEventListener("click",()=>{if(categoryList.style.display==="flex"){categoryList.style.display="none";categoryToggle.textContent="顯示分類 ▼";}else{categoryList.style.display="flex";categoryToggle.textContent="隱藏分類 ▲";}});
 categories.forEach(cat=>{const btn=document.createElement("button");btn.textContent=cat;btn.addEventListener("click",()=>{displayProducts(cat);categoryList.querySelectorAll("button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");});if(cat==="全部商品") btn.classList.add("active");categoryList.appendChild(btn);});
 
 // ===== 顯示商品 =====
-function displayProducts(filter="全部商品"){const list=document.getElementById("productList");list.innerHTML="";let filtered=filter==="全部商品"?products:products.filter(p=>p.category===filter);filtered.forEach(p=>{const div=document.createElement("div");div.className="product-card";div.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>${p.desc}</p><p>價格: $${p.price}</p><button onclick="addToCart(${p.id})">加入購物車</button>`;list.appendChild(div);});}
+function displayProducts(filter="全部商品"){
+  const list=document.getElementById("productList");list.innerHTML="";
+  let filtered=filter==="全部商品"?products:products.filter(p=>p.category===filter);
+  filtered.forEach(p=>{
+    const div=document.createElement("div");
+    div.className="product-card";
+    div.innerHTML=`<img src="${p.img}" alt="${p.name}"><h3>${p.name}</h3><p>${p.desc}</p><p>價格: $${p.price}</p><button onclick="addToCart(${p.id})">加入購物車</button>`;
+    list.appendChild(div);
+  });
+}
 displayProducts();
 
 // ===== 購物車功能 =====
 function addToCart(productId){
-  const product = products.find(p => p.id === productId);
-  const exist = cart.find(p => p.id === product.id);
-  if(exist){exist.qty += 1;} else {cart.push({...product, qty:1});}
+  const product=products.find(p=>p.id===productId);
+  const exist=cart.find(p=>p.id===product.id);
+  if(exist){exist.qty+=1;}else{cart.push({...product,qty:1});}
   openCart();
 }
 
 function openCart(){
-  const checkoutSide = document.getElementById("checkoutSide");
+  const checkoutSide=document.getElementById("checkoutSide");
   renderCartItems();
-  const confirmBtn = document.createElement("button");
-  confirmBtn.id = "confirmCheckoutBtn";
-  confirmBtn.textContent = "確認下單";
-  confirmBtn.style.marginTop = "10px";
-  checkoutSide.appendChild(confirmBtn);
-  checkoutSide.style.display = "block";
-  document.getElementById("modalOverlay").style.display = "block";
-  confirmBtn.addEventListener("click", () => {openCustomerForm();});
+  // 直接在購物車內填寫顧客資料
+  if(cart.length>0){
+    const formDiv=document.createElement("div");
+    formDiv.innerHTML=`
+    <h2>下單資料</h2>
+    <input type="text" id="name" placeholder="姓名" required>
+    <input type="tel" id="phone" placeholder="電話" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="address" placeholder="收貨地址" required>
+    <select id="payment" required>
+      <option value="">付款方式</option>
+      <option value="貨到付款">貨到付款</option>
+      <option value="線上付款">線上付款</option>
+    </select>
+    <button id="confirmCheckoutBtn">確認下單</button>`;
+    checkoutSide.appendChild(formDiv);
+
+    document.getElementById("confirmCheckoutBtn").addEventListener("click",()=>{
+      if(!currentMember){alert("請先登入會員");return;}
+      const order={id:Date.now(),name:document.getElementById("name").value,phone:document.getElementById("phone").value,email:document.getElementById("email").value,address:document.getElementById("address").value,payment:document.getElementById("payment").value,items:cart};
+      currentMember.orders=currentMember.orders||[];
+      currentMember.orders.push(order);
+      currentMember.cart=[];
+      updateMemberStorage();
+      cart=[];
+      renderCartItems();
+      document.getElementById("checkoutSide").style.display="none";
+      document.getElementById("modalOverlay").style.display="none";
+      alert(`訂單 #${order.id} 已成立，Email 已發送至 ${order.email}`);
+      updateMemberUI();
+    });
+  }
 }
 
 function renderCartItems(){
-  const checkoutSide = document.getElementById("checkoutSide");
-  checkoutSide.innerHTML = `<h2>購物車</h2>`;
-  if(cart.length === 0){checkoutSide.innerHTML += "<p>購物車空空如也</p>"; return;}
+  const checkoutSide=document.getElementById("checkoutSide");
+  checkoutSide.innerHTML="<h2>購物車</h2>";
+  if(cart.length===0){checkoutSide.innerHTML+="<p>購物車空空如也</p>";return;}
   cart.forEach((item,index)=>{
-    const div = document.createElement("div");
-    div.className = "cart-item";
-    div.innerHTML = `<img src="${item.img}" alt="${item.name}" style="width:60px;height:40px;object-fit:cover;border-radius:3px;margin-right:5px;">
+    const div=document.createElement("div");
+    div.className="cart-item";
+    div.innerHTML=`<img src="${item.img}" alt="${item.name}" style="width:60px;height:40px;object-fit:cover;border-radius:3px;margin-right:5px;">
     <span>${item.name} x ${item.qty} - $${item.price*item.qty}</span>
     <div>
       <button onclick="changeQty(${index},-1)">-</button>
@@ -135,124 +212,32 @@ function renderCartItems(){
   });
 }
 
-function changeQty(index, delta){
-  cart[index].qty += delta;
-  if(cart[index].qty < 1) cart[index].qty = 1;
-  renderCartItems();
-  const checkoutSide = document.getElementById("checkoutSide");
-  const confirmBtn = document.createElement("button");
-  confirmBtn.id = "confirmCheckoutBtn";
-  confirmBtn.textContent = "確認下單";
-  confirmBtn.style.marginTop = "10px";
-  checkoutSide.appendChild(confirmBtn);
-  confirmBtn.addEventListener("click", () => {openCustomerForm();});
-}
-
-function removeItem(index){
-  cart.splice(index,1);
-  renderCartItems();
-  if(cart.length > 0){
-    const checkoutSide = document.getElementById("checkoutSide");
-    const confirmBtn = document.createElement("button");
-    confirmBtn.id = "confirmCheckoutBtn";
-    confirmBtn.textContent = "確認下單";
-    confirmBtn.style.marginTop = "10px";
-    checkoutSide.appendChild(confirmBtn);
-    confirmBtn.addEventListener("click", () => {openCustomerForm();});
-  }
-}
-
-// ===== 顧客資料表單 =====
-function openCustomerForm(){
-  const checkoutSide=document.getElementById("checkoutSide");
-  checkoutSide.innerHTML+=`
-  <h2>下單資料</h2>
-  <form id="checkoutForm">
-  <input type="text" id="name" placeholder="姓名" required>
-  <input type="tel" id="phone" placeholder="電話" required>
-  <input type="email" id="email" placeholder="Email" required>
-  <input type="text" id="address" placeholder="收貨地址" required>
-  <select id="payment" required>
-  <option value="">付款方式</option>
-  <option value="貨到付款">貨到付款</option>
-  <option value="線上付款">線上付款</option>
-  </select>
-  <button type="submit">確認下單</button>
-  </form>`;
-
-  document.getElementById("checkoutForm").addEventListener("submit",e=>{
-    e.preventDefault();
-    const order={id:Date.now(),name:document.getElementById("name").value,phone:document.getElementById("phone").value,email:document.getElementById("email").value,address:document.getElementById("address").value,payment:document.getElementById("payment").value,items:cart};
-    if(currentMember){currentMember.orders.push(order);currentMember.cart=[];updateMemberStorage();}
-    alert(`訂單 #${order.id} 已成立，Email 已發送至 ${order.email}`);
-    cart=[]; checkoutSide.style.display="none"; document.getElementById("modalOverlay").style.display="none"; renderHistorySide();
-  });
-}
+function changeQty(index,delta){cart[index].qty+=delta;if(cart[index].qty<1)cart[index].qty=1;openCart();}
+function removeItem(index){cart.splice(index,1);openCart();}
 
 // ===== 歷史訂單 =====
-function renderHistorySide(){const ul=document.getElementById("historyListSide");ul.innerHTML="";if(currentMember && currentMember.orders.length>0){currentMember.orders.forEach(o=>{const li=document.createElement("li");const totalQty=o.items.reduce((a,b)=>a+b.qty,0);const totalPrice=o.items.reduce((a,b)=>a+b.qty*b.price,0);li.innerHTML=`訂單 #${o.id} | ${o.payment} | ${totalQty} 件 | $${totalPrice} <button class="viewDetail">查看明細</button>`;li.querySelector(".viewDetail").addEventListener("click",()=>{showOrderModal(o);});ul.appendChild(li);});} else ul.innerHTML="<li>尚無歷史訂單</li>";}
+function renderHistorySide(){const ul=document.getElementById("historyListSide");ul.innerHTML="";if(currentMember && currentMember.orders && currentMember.orders.length>0){currentMember.orders.forEach(o=>{const li=document.createElement("li");const totalQty=o.items.reduce((a,b)=>a+b.qty,0);const totalPrice=o.items.reduce((a,b)=>a+b.qty*b.price,0);li.innerHTML=`訂單 #${o.id} | ${o.payment} | ${totalQty} 件 | $${totalPrice} <button class="viewDetail">查看明細</button>`;li.querySelector(".viewDetail").addEventListener("click",()=>{showOrderModal(o);});ul.appendChild(li);});}else ul.innerHTML="<li>尚無歷史訂單</li>";}
 function showOrderModal(order){const modal=document.getElementById("orderModal");modal.innerHTML="";order.items.forEach(it=>{const div=document.createElement("div");div.textContent=`${it.name} x ${it.qty} - $${it.price*it.qty}`;modal.appendChild(div);});modal.innerHTML+=`<button onclick="closeOrderModal()">關閉</button>`;modal.style.display="block";document.getElementById("modalOverlay").style.display="block";}
 function closeOrderModal(){document.getElementById("orderModal").style.display="none";document.getElementById("modalOverlay").style.display="none";}
 
-// ===== 側邊欄控制 =====
+// ===== 側邊欄 =====
 document.getElementById("historyBtn").addEventListener("click",()=>{document.getElementById("historySide").style.display="block";document.getElementById("modalOverlay").style.display="block";});
 document.getElementById("closeHistoryBtn").addEventListener("click",()=>{document.getElementById("historySide").style.display="none";document.getElementById("modalOverlay").style.display="none";});
 document.getElementById("introBtn").addEventListener("click",()=>{document.getElementById("introSide").style.display="block";document.getElementById("modalOverlay").style.display="block";});
 document.getElementById("closeIntroBtn").addEventListener("click",()=>{document.getElementById("introSide").style.display="none";document.getElementById("modalOverlay").style.display="none";});
-document.getElementById("contactBtn").addEventListener("click",()=>{document.getElementById("contactSide").style.display="block";document.getElementById("modalOverlay").style.display
-
-// ===== 側邊欄關閉 overlay 控制 =====
+document.getElementById("contactBtn").addEventListener("click",()=>{document.getElementById("contactSide").style.display="block";document.getElementById("modalOverlay").style.display="block";});
 document.getElementById("closeContactBtn").addEventListener("click",()=>{document.getElementById("contactSide").style.display="none";document.getElementById("modalOverlay").style.display="none";});
-document.getElementById("modalOverlay").addEventListener("click",()=>{
-  document.getElementById("checkoutSide").style.display="none";
-  document.getElementById("modalOverlay").style.display="none";
-  document.getElementById("historySide").style.display="none";
-  document.getElementById("introSide").style.display="none";
-  document.getElementById("contactSide").style.display="none";
-  document.getElementById("orderModal").style.display="none";
+
+// ===== 購物車開關按鈕 =====
+document.getElementById("cartToggleBtn").addEventListener("click",()=>{
+  const side=document.getElementById("checkoutSide");
+  if(side.style.display==="block"){side.style.display="none";document.getElementById("modalOverlay").style.display="none";}
+  else{openCart();side.style.display="block";document.getElementById("modalOverlay").style.display="block";}
 });
 
-// ===== 會員 localStorage 更新 =====
-function updateMemberStorage(){
-  if(!currentMember) return;
-  let members = JSON.parse(localStorage.getItem("members"))||[];
-  const idx = members.findIndex(m=>m.username===currentMember.username);
-  if(idx>=0){members[idx]=currentMember;}else{members.push(currentMember);}
-  localStorage.setItem("members",JSON.stringify(members));
-}
+// ===== localStorage 更新 =====
+function updateMemberStorage(){if(!currentMember)return;let members=JSON.parse(localStorage.getItem("members"))||[];const idx=members.findIndex(m=>m.username===currentMember.username);if(idx>=0){members[idx]=currentMember;}else{members.push(currentMember);}localStorage.setItem("members",JSON.stringify(members));}
 
-// ===== 後台管理隱藏 =====
-function initAdmin(){
-  if(new URLSearchParams(window.location.search).get("admin")==="true"){
-    const adminForm = document.createElement("form");
-    adminForm.innerHTML=`
-    <h2>後台管理 - 商品新增</h2>
-    <input type="text" id="adminName" placeholder="商品名稱" required>
-    <input type="text" id="adminCategory" placeholder="分類" required>
-    <input type="number" id="adminPrice" placeholder="價格" required>
-    <input type="text" id="adminImg" placeholder="圖片 URL" required>
-    <input type="text" id="adminDesc" placeholder="商品介紹">
-    <button type="submit">新增商品</button>
-    `;
-    document.body.appendChild(adminForm);
-    adminForm.addEventListener("submit",e=>{
-      e.preventDefault();
-      const newProduct={
-        id:Date.now(),
-        name:document.getElementById("adminName").value,
-        category:document.getElementById("adminCategory").value,
-        price:parseInt(document.getElementById("adminPrice").value),
-        img:document.getElementById("adminImg").value,
-        desc:document.getElementById("adminDesc").value
-      };
-      products.push(newProduct);
-      displayProducts(); // 重新渲染商品
-      alert("商品新增成功！");
-      adminForm.reset();
-    });
-  }
-}
-initAdmin();
 </script>
 </body>
-</html>                                                    
+</html>
