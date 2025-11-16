@@ -6,93 +6,403 @@
 <title>貓貓燈具</title>
 <style>
 body {margin:0; font-family:Arial,sans-serif; background:#f5f5f5; color:#333;}
-header{background:#fff; display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid #ddd; position:fixed; top:0; left:0; width:100%; z-index:1000;}
+header{background:#fff; display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid #ddd; position:fixed; top:0; left:0; width:100%; z-index:1000; box-shadow:0 1px 5px rgba(0,0,0,0.1);}
 header img{width:50px;height:50px;border-radius:50%;}
 header h1{margin:0 10px; font-size:1.8em; color:#333;}
 header .top-buttons{display:flex; align-items:center; gap:5px; margin-left:20px;}
-header .top-buttons button{padding:5px 10px; border:none; border-radius:5px; background:#333; color:#fff; cursor:pointer;}
+header .top-buttons button{padding:5px 10px; border:none; border-radius:5px; background:#333; color:#fff; cursor:pointer; font-size:0.9em;}
 header .top-buttons button:hover{background:#555;}
 .container{max-width:1000px; margin:100px auto 40px; padding:0 20px;}
 #categoryToggle{cursor:pointer; background:#333; color:#fff; padding:8px; border-radius:5px; width:140px; text-align:center; margin:10px 0;}
 #categoryToggle:hover{background:#555;}
 #categoryList{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; display:none;}
-#categoryList button{padding:5px 10px; background:#666; border:none; color:#fff; border-radius:5px; cursor:pointer;}
+#categoryList button{padding:5px 10px; background:#666; border:none; color:#fff; border-radius:5px; cursor:pointer; font-size:0.9em;}
 #categoryList button.active{background:#333;}
 #categoryList button:hover{background:#555;}
 .products{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;}
 .product-card{background:#fff; border-radius:10px; padding:15px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1);}
 .product-card img{width:100%; height:180px; object-fit:cover; border-radius:5px;}
-.product-card h3{margin:10px 0 5px;}
+.productopard h3{margin:10px 0 5px;}
 .product-card p{margin:0 0 10px;}
 .product-card button{padding:5px 10px; margin:2px; background:#333; border:none; border-radius:5px; color:#fff; cursor:pointer;}
 .product-card button:hover{background:#555;}
-.side-panel{position:fixed; top:0; right:0; width:320px; height:100%; background:#fff; padding:20px; overflow-y:auto; border-left:1px solid #ddd; transition: all 0.2s ease; z-index:950; display:none;}
-.overlay{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.2); z-index:900;}
-#orderModal{display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:20px; border-radius:10px; max-height:80%; overflow-y:auto; z-index:1001;}
+.side-panel{position:fixed; top:0; right:0; width:320px; height:100%; background:#fff; padding:20px; overflow-y:auto; border-left:1px solid #ddd; transition: all 0.3s ease; z-index:950; display:none; box-shadow:-2px 0 10px rgba(0,0,0,0.1);}
+.overlay{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.3); z-index:900;}
+#orderModal{display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:20px; border-radius:10px; max-height:80%; overflow-y:auto; z-index:1001; box-shadow:0 5px 20px rgba(0,0,0,0.2);}
 form{background:#fff; padding:15px; border-radius:10px; margin-bottom:20px; border:1px solid #ddd;}
 form input, form select{width:100%; padding:8px; margin:5px 0 10px; border-radius:5px; border:1px solid #ccc; background:#fff; color:#333;}
 form button{width:100%; padding:10px; background:#333; border:none; border-radius:5px; font-weight:bold; color:#fff; cursor:pointer;}
 form button:hover{background:#555;}
-.cart-item{display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;}
-.cart-item button{padding:2px 5px; margin-left:2px;}
-#cartToggleBtn,#cartCloseBtn{display:none; margin:10px 0; padding:5px 10px; border:none; border-radius:5px; background:#333; color:#fff; cursor:pointer;}
-#cartToggleBtn:hover,#cartCloseBtn:hover{background:#555;}
+.cart-item{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding:8px; background:#f9f9f9; border-radius:5px;}
+.cart-item button{padding:3px 8px; margin-left:2px; font-size:0.9em;}
+#cartToggleBtn, #logoutBtn{margin:10px 0; padding:5px 10px; border:none; border-radius:5px; background:#333; color:#fff; cursor:pointer;}
+#cartToggleBtn:hover, #logoutBtn:hover{background:#555;}
+#memberArea{margin-bottom:10px;}
+#welcomeMsg{font-weight:bold; color:#333;}
+#historyListSide{list-style:none; padding:0;}
+#historyListSide li{margin:10px 0; padding:10px; background:#f0f0f0; border-radius:5px;}
 </style>
 </head>
 <body>
+
 <header>
-<div style="display:flex; align-items:center;">
-<img src="https://placekitten.com/50/50" alt="公司頭貼">
-<h1>貓貓燈具</h1>
-<div class="top-buttons">
-<button id="introBtn">公司簡介</button>
-<button id="historyBtn">交易歷史</button>
-<button id="contactBtn">客服</button>
-</div>
-</div>
+  <div style="display:flex; align-items:center; flex:1;">
+    <img src="https://placekitten.com/50/50" alt="公司頭貼">
+    <h1>貓貓燈具</h1>
+    <div class="top-buttons">
+      <button id="introBtn">公司簡介</button>
+      <button id="historyBtn">交易歷史</button>
+      <button id="contactBtn">客服</button>
+    </div>
+  </div>
 </header>
+
 <div class="container">
-<div id="memberArea"><span id="welcomeMsg"></span><button id="logoutBtn" style="display:none;">登出</button></div>
-<button id="cartToggleBtn">開啟購物車</button>
-<div id="categoryToggle">顯示分類 ▼</div>
-<div id="categoryList"></div>
-<div class="products" id="productList"></div>
-<form id="memberForm">
-<h2>會員系統</h2>
-<input type="text" id="memberUsername" placeholder="帳號" required>
-<input type="password" id="memberPassword" placeholder="密碼" required>
-<input type="email" id="memberEmail" placeholder="Email (註冊用)">
-<button type="submit" id="memberBtn">註冊 / 登入</button>
-</form>
+  <div id="memberArea">
+    <span id="welcomeMsg"></span>
+    <button id="logoutBtn" style="display:none;">登出</button>
+  </div>
+
+  <button id="cartToggleBtn" style="display:none;">開啟購物車</button>
+
+  <div id="categoryToggle">顯示分類 ▼</div>
+  <div id="categoryList"></div>
+
+  <div class="products" id="productList"></div>
+
+  <form id="memberForm">
+    <h2>會員系統</h2>
+    <input type="text" id="memberUsername" placeholder="帳號" required>
+    <input type="password" id="memberPassword" placeholder="密碼" required>
+    <input type="email" id="memberEmail" placeholder="Email (註冊用)">
+    <button type="submit" id="memberBtn">註冊 / 登入</button>
+  </form>
 </div>
-<div id="historySide" class="side-panel"><h2>歷史訂單</h2><ul id="historyListSide"></ul><button id="closeHistoryBtn">關閉</button></div>
-<div id="introSide" class="side-panel"><h2>公司簡介</h2><p>貓貓燈具專注於提供各式吊燈、壁燈、吸頂燈、投射燈、燈條與軌道燈，結合設計美感與功能性，為每個空間帶來光與溫度。</p><button id="closeIntroBtn">關閉</button></div>
-<div id="contactSide" class="side-panel"><h2>客服聯絡方式</h2><p>Email: support@catlamp.com</p><p>LINE: @catlamp</p><p>電話: 02-1234-5678</p><button id="closeContactBtn">關閉</button></div>
-<div id="checkoutSide" class="side-panel"><button id="cartCloseBtn">關閉購物車</button></div>
+
+<!-- 側邊欄 -->
+<div id="historySide" class="side-panel">
+  <h2>歷史訂單</h2>
+  <ul id="historyListSide"></ul>
+  <button id="closeHistoryBtn">關閉</button>
+</div>
+
+<div id="introSide" class="side-panel">
+  <h2>公司簡介</h2>
+  <p>貓貓燈具專注於提供各式吊燈、壁燈、吸頂燈、投射燈、燈條與軌道燈，結合設計美感與功能性，為每個空間帶來光與溫度。</p>
+  <button id="closeIntroBtn">關閉</button>
+</div>
+
+<div id="contactSide" class="side-panel">
+  <h2>客服聯絡方式</h2>
+  <p>Email: support@catlamp.com</p>
+  <p>LINE: @catlamp</p>
+  <p>電話: 02-1234-5678</p>
+  <button id="closeContactBtn">關閉</button>
+</div>
+
+<div id="checkoutSide" class="side-panel">
+  <!-- 內容由 JS 動態插入 -->
+</div>
+
 <div id="orderModal"></div>
 <div id="modalOverlay" class="overlay"></div>
+
 <script>
-let products=[{id:1,name:"現代吊燈A",category:"吊燈",price:2500,img:"https://placekitten.com/300/180",desc:"適合客廳使用"},{id:2,name:"復古壁燈B",category:"壁燈",price:1200,img:"https://placekitten.com/301/180",desc:"適合走廊或臥室"},{id:3,name:"吸頂燈C",category:"吸頂燈",price:1800,img:"https://placekitten.com/302/180",desc:"節能又明亮"},{id:4,name:"投射燈D",category:"投射燈",price:900,img:"https://placekitten.com/303/180",desc:"可調整方向"},{id:5,name:"燈條E",category:"燈條",price:600,img:"https://placekitten.com/304/180",desc:"裝飾性強"},{id:6,name:"軌道燈F",category:"軌道燈",price:1500,img:"https://placekitten.com/305/180",desc:"適合展示空間"}];
-const categories=["全部商品","吊燈","壁燈","吸頂燈","投射燈","燈條","軌道燈"];
-let cart=[],currentMember=null;
-const productList=document.getElementById("productList"),categoryList=document.getElementById("categoryList"),cartToggleBtn=document.getElementById("cartToggleBtn"),checkoutSide=document.getElementById("checkoutSide"),cartCloseBtn=document.getElementById("cartCloseBtn"),modalOverlay=document.getElementById("modalOverlay"),introBtn=document.getElementById("introBtn"),historyBtn=document.getElementById("historyBtn"),contactBtn=document.getElementById("contactBtn"),introSide=document.getElementById("introSide"),historySide=document.getElementById("historySide"),contactSide=document.getElementById("contactSide"),closeIntroBtn=document.getElementById("closeIntroBtn"),closeHistoryBtn=document.getElementById("closeHistoryBtn"),closeContactBtn=document.getElementById("closeContactBtn");
-// 顯示產品
-function displayProducts(filter="全部商品"){productList.innerHTML="";let filtered=filter==="全部商品"?products:products.filter(p=>p.category===filter);filtered.forEach(p=>{let div=document.createElement("div");div.className="product-card";div.innerHTML=`<img src='${p.img}'><h3>${p.name}</h3><p>${p.desc}</p><p>價格: $${p.price}</p><button onclick='addToCart(${p.id})'>加入購物車</button>`;productList.appendChild(div);});}
+const products = [
+  {id:1,name:"現代吊燈A",category:"吊燈",price:2500,img:"https://placekitten.com/300/180",desc:"適合客廳使用"},
+  {id:2,name:"復古壁燈B",category:"壁燈",price:1200,img:"https://placekitten.com/301/180",desc:"適合走廊或臥室"},
+  {id:3,name:"吸頂燈C",category:"吸頂燈",price:1800,img:"https://placekitten.com/302/180",desc:"節能又明亮"},
+  {id:4,name:"投射燈D",category:"投射燈",price:900,img:"https://placekitten.com/303/180",desc:"可調整方向"},
+  {id:5,name:"燈條E",category:"燈條",price:600,img:"https://placekitten.com/304/180",desc:"裝飾性強"},
+  {id:6,name:"軌道燈F",category:"軌道燈",price:1500,img:"https://placekitten.com/305/180",desc:"適合展示空間"}
+];
+const categories = ["全部商品","吊燈","壁燈","吸頂燈","投射燈","燈條","軌道燈"];
+
+let cart = JSON.parse(localStorage.getItem('catlamp_cart')) || [];
+let currentMember = JSON.parse(localStorage.getItem('catlamp_member')) || null;
+let orderHistory = JSON.parse(localStorage.getItem('catlamp_history')) || [];
+
+// DOM
+const productList = document.getElementById("productList");
+const categoryList = document.getElementById("categoryList");
+const cartToggleBtn = document.getElementById("cartToggleBtn");
+const checkoutSide = document.getElementById("checkoutSide");
+const modalOverlay = document.getElementById("modalOverlay");
+const introBtn = document.getElementById("introBtn");
+const historyBtn = document.getElementById("historyBtn");
+const contactBtn = document.getElementById("contactBtn");
+const introSide = document.getElementById("introSide");
+const historySide = document.getElementById("historySide");
+const contactSide = document.getElementById("contactSide");
+const welcomeMsg = document.getElementById("welcomeMsg");
+const logoutBtn = document.getElementById("logoutBtn");
+const memberForm = document.getElementById("memberForm");
+const historyListSide = document.getElementById("historyListSide");
+
+// 初始化
+updateCartButton();
+updateMemberUI();
+renderCategories();
 displayProducts();
-categories.forEach(cat=>{let btn=document.createElement("button");btn.textContent=cat;btn.addEventListener("click",()=>{displayProducts(cat);categoryList.querySelectorAll("button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");});if(cat==="全部商品") btn.classList.add("active");categoryList.appendChild(btn);});
-document.getElementById("categoryToggle").addEventListener("click",()=>{categoryList.style.display=categoryList.style.display==="flex"?"none":"flex";document.getElementById("categoryToggle").textContent=categoryList.style.display==="flex"?"隱藏分類 ▲":"顯示分類 ▼";});
-// 購物車
-function addToCart(id){let p=products.find(p=>p.id===id),exist=cart.find(c=>c.id===id);exist?exist.qty++:cart.push({...p,qty:1});cartToggleBtn.style.display="inline-block";renderCart();checkoutSide.style.display='block';modalOverlay.style.display='block';}
-function renderCart(){checkoutSide.innerHTML="<button id='cartCloseBtn'>關閉購物車</button>";if(cart.length===0){checkoutSide.innerHTML+="<p>購物車空空如也</p>";return;}cart.forEach((c,i)=>{let div=document.createElement("div");div.className="cart-item";div.innerHTML=`<span>${c.name} x ${c.qty} - $${c.price*c.qty}</span><div><button onclick='changeQty(${i},-1)'>-</button><button onclick='changeQty(${i},1)'>+</button><button onclick='removeItem(${i})'>刪除</button></div>`;checkoutSide.appendChild(div);});document.getElementById('cartCloseBtn').addEventListener('click',()=>{checkoutSide.style.display='none';modalOverlay.style.display='none';});}
-function changeQty(i,d){cart[i].qty+=d;if(cart[i].qty<1)cart[i].qty=1;renderCart();}
-function removeItem(i){cart.splice(i,1);renderCart();if(cart.length===0)cartToggleBtn.style.display='none';}
-// 上方按鈕
-introBtn.addEventListener('click',()=>{introSide.style.display='block';modalOverlay.style.display='block';});
-historyBtn.addEventListener('click',()=>{historySide.style.display='block';modalOverlay.style.display='block';});
-contactBtn.addEventListener('click',()=>{contactSide.style.display='block';modalOverlay.style.display='block';});
-closeIntroBtn.addEventListener('click',()=>{introSide.style.display='none';modalOverlay.style.display='none';});
-closeHistoryBtn.addEventListener('click',()=>{historySide.style.display='none';modalOverlay.style.display='none';});
-closeContactBtn.addEventListener('click',()=>{contactSide.style.display='none';modalOverlay.style.display='none';});
+renderHistory();
+
+// === 產品顯示 ===
+function displayProducts(filter = "全部商品") {
+  productList.innerHTML = "";
+  const filtered = filter === "全部商品" ? products : products.filter(p => p.category === filter);
+  filtered.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product-card";
+    div.innerHTML = `
+      <img src='${p.img}' alt='${p.name}'>
+      <h3>${p.name}</h3>
+      <p>${p.desc}</p>
+      <p>價格: $${p.price}</p>
+      <button onclick='addToCart(${p.id})'>加入購物車</button>
+    `;
+    productList.appendChild(div);
+  });
+}
+
+function renderCategories() {
+  categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    btn.addEventListener("click", () => {
+      displayProducts(cat);
+      categoryList.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    });
+    if (cat === "全部商品") btn.classList.add("active");
+    categoryList.appendChild(btn);
+  });
+}
+
+document.getElementById("categoryToggle").addEventListener("click", () => {
+  const isFlex = categoryList.style.display === "flex";
+  categoryList.style.display = isFlex ? "none" : "flex";
+  document.getElementById("categoryToggle").textContent = isFlex ? "顯示分類 ▼" : "隱藏分類 ▲";
+});
+
+// === 購物車系統 ===
+function addToCart(id) {
+  const p = products.find(p => p.id === id);
+  const exist = cart.find(c => c.id === id);
+  if (exist) exist.qty++;
+  else cart.push({ ...p, qty: 1 });
+  saveCart();
+  updateCartButton();
+  openCart();
+}
+
+function updateCartButton() {
+  cartToggleBtn.style.display = cart.length > 0 ? "inline-block" : "none";
+}
+
+function openCart() {
+  renderCart();
+  checkoutSide.style.display = "block";
+  modalOverlay.style.display = "block";
+}
+
+function renderCart() {
+  // 清空舊內容（保留關閉按鈕）
+  const content = checkoutSide.querySelector('#cartContent') || document.createElement('div');
+  content.id = 'cartContent';
+  content.innerHTML = '';
+
+  if (cart.length === 0) {
+    content.innerHTML = "<p style='text-align:center; color:#999;'>購物車空空如也</p>";
+  } else {
+    const total = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+    cart.forEach((c, i) => {
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <span>${c.name} x ${c.qty} - $${c.price * c.qty}</span>
+        <div>
+          <button data-action="dec" data-index="${i}">-</button>
+          <button data-action="inc" data-index="${i}">+</button>
+          <button data-action="del" data-index="${i}">刪除</button>
+        </div>
+      `;
+      content.appendChild(div);
+    });
+    const totalDiv = document.createElement("div");
+    totalDiv.style.cssText = "margin-top:15px; font-weight:bold; text-align:right;";
+    totalDiv.innerHTML = `總計: $${total} <button id="checkoutBtn" style="margin-left:10px; padding:5px 10px;">結帳</button>`;
+    content.appendChild(totalDiv);
+  }
+
+  // 確保關閉按鈕存在
+  let closeBtn = checkoutSide.querySelector('#cartCloseBtn');
+  if (!closeBtn) {
+    closeBtn = document.createElement('button');
+    closeBtn.id = 'cartCloseBtn';
+    closeBtn.textContent = '關閉購物車';
+    checkoutSide.prepend(closeBtn);
+  }
+  checkoutSide.appendChild(content);
+
+  // 事件委派
+  checkoutSide.onclick = (e) => {
+    const btn = e.target;
+    const action = btn.dataset.action;
+    const i = parseInt(btn.dataset.index);
+    if (isNaN(i)) return;
+    if (action === 'dec') changeQty(i, -1);
+    if (action === 'inc') changeQty(i, 1);
+    if (action === 'del') removeItem(i);
+  };
+
+  // 結帳按鈕
+  const checkoutBtn = content.querySelector('#checkoutBtn');
+  if (checkoutBtn) {
+    checkoutBtn.onclick = () => {
+      if (!currentMember) {
+        alert("請先登入會員才能結帳！");
+        return;
+      }
+      const order = {
+        id: Date.now(),
+        date: new Date().toLocaleString('zh-TW'),
+        items: [...cart],
+        total: cart.reduce((s,c)=>s+c.price*c.qty, 0),
+        member: currentMember.username
+      };
+      orderHistory.push(order);
+      localStorage.setItem('catlamp_history', JSON.stringify(orderHistory));
+      cart = [];
+      saveCart();
+      updateCartButton();
+      renderHistory();
+      closeAllPanels();
+      alert("訂單已送出！感謝您的購買～");
+    };
+  }
+
+  closeBtn.onclick = closeAllPanels;
+}
+
+function changeQty(i, d) {
+  cart[i].qty += d;
+  if (cart[i].qty < 1) cart[i].qty = 1;
+  saveCart();
+  renderCart();
+}
+
+function removeItem(i) {
+  cart.splice(i, 1);
+  saveCart();
+  updateCartButton();
+  renderCart();
+}
+
+function saveCart() {
+  localStorage.setItem('catlamp_cart', JSON.stringify(cart));
+}
+
+// === 會員系統 ===
+function updateMemberUI() {
+  if (currentMember) {
+    welcomeMsg.textContent = `歡迎，${currentMember.username}！`;
+    logoutBtn.style.display = "inline-block";
+    memberForm.style.display = "none";
+  } else {
+    welcomeMsg.textContent = "";
+    logoutBtn.style.display = "none";
+    memberForm.style.display = "block";
+  }
+  renderHistory();
+}
+
+memberForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const username = document.getElementById('memberUsername').value.trim();
+  const password = document.getElementById('memberPassword').value;
+  const email = document.getElementById('memberEmail').value.trim();
+
+  if (!username || !password) {
+    alert("請輸入帳號與密碼");
+    return;
+  }
+
+  const members = JSON.parse(localStorage.getItem('catlamp_members') || '[]');
+  const existing = members.find(m => m.username === username);
+
+  if (existing) {
+    // 登入
+    if (existing.password !== password) {
+      alert("密碼錯誤！");
+      return;
+    }
+    currentMember = { username, email: existing.email };
+  } else {
+    // 註冊
+    if (!email) {
+      alert("註冊請填寫 Email");
+      return;
+    }
+    members.push({ username, password, email });
+    localStorage.setItem('catlamp_members', JSON.stringify(members));
+    currentMember = { username, email };
+  }
+
+  localStorage.setItem('catlamp_member', JSON.stringify(currentMember));
+  updateMemberUI();
+  alert(currentMember ? "登入成功！" : "註冊成功！");
+});
+
+logoutBtn.addEventListener('click', () => {
+  currentMember = null;
+  localStorage.removeItem('catlamp_member');
+  updateMemberUI();
+});
+
+// === 歷史訂單 ===
+function renderHistory() {
+  historyListSide.innerHTML = "";
+  const userOrders = currentMember ? orderHistory.filter(o => o.member === currentMember.username) : [];
+  if (userOrders.length === 0) {
+    historyListSide.innerHTML = "<li style='color:#999; text-align:center;'>尚無訂單紀錄</li>";
+  } else {
+    userOrders.forEach(order => {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${order.date}</strong><br>訂單編號: ${order.id}<br>總金額: $${order.total}<br><small>${order.items.map(i=>`${i.name} x${i.qty}`).join(', ')}</small>`;
+      historyListSide.appendChild(li);
+    });
+  }
+}
+
+// === 側邊欄控制 ===
+cartToggleBtn.addEventListener('click', openCart);
+
+introBtn.addEventListener('click', () => openPanel(introSide));
+historyBtn.addEventListener('click', () => openPanel(historySide));
+contactBtn.addEventListener('click', () => openPanel(contactSide));
+
+document.getElementById('closeIntroBtn').addEventListener('click', closeAllPanels);
+document.getElementById('closeHistoryBtn').addEventListener('click', closeAllPanels);
+document.getElementById('closeContactBtn').addEventListener('click', closeAllPanels);
+
+function openPanel(panel) {
+  closeAllPanels();
+  panel.style.display = "block";
+  modalOverlay.style.display = "block";
+}
+
+function closeAllPanels() {
+  document.querySelectorAll('.side-panel').forEach(p => p.style.display = 'none');
+  modalOverlay.style.display = 'none';
+}
+
+modalOverlay.addEventListener('click', closeAllPanels);
+
+// 頁面載入完成
+window.addEventListener('load', () => {
+  if (cart.length > 0) updateCartButton();
+});
 </script>
+
 </body>
 </html>
