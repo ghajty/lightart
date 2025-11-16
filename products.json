@@ -1,8 +1,58 @@
 [
-  {"id":1,"name":"現代吊燈A","category":"吊燈","price":2500,"img":"https://placekitten.com/300/180","desc":"適合客廳使用"},
-  {"id":2,"name":"復古壁燈B","category":"壁燈","price":1200,"img":"https://placekitten.com/301/180","desc":"適合走廊或臥室"},
-  {"id":3,"name":"吸頂燈C","category":"吸頂燈","price":1800,"img":"https://placekitten.com/302/180","desc":"節能又明亮"},
-  {"id":4,"name":"投射燈D","category":"投射燈","price":900,"img":"https://placekitten.com/303/180","desc":"可調整方向"},
-  {"id":5,"name":"燈條E","category":"燈條","price":600,"img":"https://placekitten.com/304/180","desc":"裝飾性強"},
-  {"id":6,"name":"軌道燈F","category":"軌道燈","price":1500,"img":"https://placekitten.com/305/180","desc":"適合展示空間"}
+  {
+    "id": 1,
+    "name": "現代吊燈A",
+    "category": "吊燈",
+    "price": 2500,
+    "img": "https://placekitten.com/300/180",
+    "desc": "適合客廳使用"
+  },
+  {
+    "id": 2,
+    "name": "復古壁燈B",
+    "category": "壁燈",
+    "price": 1200,
+    "img": "https://placekitten.com/301/180",
+    "desc": "適合走廊或臥室"
+  },
+  {
+    "id": 3,
+    "name": "吸頂燈C",
+    "category": "吸頂燈",
+    "price": 1800,
+    "img": "https://placekitten.com/302/180",
+    "desc": "節能又明亮"
+  },
+  {
+    "id": 4,
+    "name": "投射燈D",
+    "category": "投射燈",
+    "price": 900,
+    "img": "https://placekitten.com/303/180",
+    "desc": "可調整方向"
+  },
+  {
+    "id": 5,
+    "name": "燈條E",
+    "category": "燈條",
+    "price": 600,
+    "img": "https://placekitten.com/304/180",
+    "desc": "裝飾性強"
+  },
+  {
+    "id": 6,
+    "name": "軌道燈F",
+    "category": "軌道燈",
+    "price": 1500,
+    "img": "https://placekitten.com/305/180",
+    "desc": "適合展示空間"
+  },
+  {
+    "id": 7,
+    "name": "北歐落地燈 Pro",
+    "category": "落地燈",
+    "price": 3999,
+    "img": "https://i.imgur.com/9ZJZJZk.png",
+    "desc": "支援調光，極簡設計"
+  }
 ]
