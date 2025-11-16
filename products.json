@@ -31,17 +31,5 @@
       "https://via.placeholder.com/300x300/DDA0DD/FFFFFF?text=細節3"
     ],
     "desc": "節能又明亮"
-  },
-  {
-    "id": 7,
-    "name": "北歐落地燈 Pro",
-    "category": "落地燈",
-    "price": 3999,
-    "imgs": [
-      "https://via.placeholder.com/300x300/98D8C8/FFFFFF?text=落地燈",
-      "https://via.placeholder.com/300x300/F7DC6F/FFFFFF?text=細節4",
-      "https://via.placeholder.com/300x300/BB8FCE/FFFFFF?text=細節5"
-    ],
-    "desc": "支援調光，極簡設計"
   }
 ]
