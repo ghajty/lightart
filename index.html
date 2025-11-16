@@ -84,6 +84,8 @@
   .member-btn:hover {background:#c0392b;}
   .logout-btn {background:#999; margin-top:5px;}
   .logout-btn:hover {background:#777;}
+  .toggle-register {font-size:0.85em; color:#0066cc; cursor:pointer; text-align:center; margin-top:10px;}
+  .toggle-register:hover {text-decoration:underline;}
 
   /* 歷史訂單 */
   .order-history {margin-top:20px; display:none;}
@@ -116,7 +118,6 @@
   <h1>貓貓燈具</h1>
   <div class="nav-links">
     <a id="aboutLink">公司簡介</a>
-    <!-- 聯絡我們已刪除 -->
   </div>
   <div class="cart-icon" id="cartIcon">
     <i class="fas fa-shopping-cart"></i>
@@ -173,7 +174,12 @@
       <label>密碼</label>
       <input type="password" id="password" placeholder="請輸入密碼">
     </div>
+    <div class="form-group" id="emailGroup" style="display:none;">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="請輸入 Email（註冊用）">
+    </div>
     <button class="member-btn" id="memberBtn">登入</button>
+    <div class="toggle-register" id="toggleRegister">還沒有帳號？點此註冊</div>
   </div>
 
   <!-- 歷史訂單 -->
@@ -187,6 +193,7 @@
 let products = [];
 let cart = JSON.parse(localStorage.getItem('catlamp_cart') || '[]');
 let currentUser = null;
+let isRegisterMode = false;
 
 // 關閉彈窗
 function closeModal(id) {
@@ -218,13 +225,15 @@ function renderCategories() {
       displayProducts(cat);
       list.querySelectorAll("button").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      // 自動滾動到商品區
+      document.getElementById('productList').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
     if (cat === "全部商品") btn.classList.add("active");
     list.appendChild(btn);
   });
 }
 
-// 顯示商品
+// 顯示商品（直接顯示圖片）
 function displayProducts(filter = "全部商品") {
   const list = document.getElementById("productList");
   list.innerHTML = "";
@@ -241,7 +250,7 @@ function displayProducts(filter = "全部商品") {
     const card = document.createElement("div");
     card.className = "product-card";
     card.innerHTML = `
-      <img src='${p.imgs?.[0] || 'https://via.placeholder.com/300'}' alt='${p.name}'>
+      <img src='${p.imgs?.[0] || 'https://via.placeholder.com/300'}' alt='${p.name}' loading='lazy'>
       <h3>${p.name}</h3>
       <p>${p.desc || ''}</p>
       <p class="price">$${p.price}</p>
@@ -315,12 +324,24 @@ window.changeQty = function(id, delta) {
   renderCart();
 };
 
-// 會員系統
+// 會員系統（登入 + 註冊）
 document.getElementById('memberBtn').onclick = () => {
   const account = document.getElementById('account').value.trim();
   const password = document.getElementById('password').value;
-  if (!account || !password) return alert('請填寫完整！');
+  const email = document.getElementById('email').value.trim();
 
+  if (!account || !password) return alert('請填寫帳號與密碼！');
+
+  if (isRegisterMode) {
+    if (!email) return alert('註冊需填寫 Email！');
+    // 模擬註冊成功
+    alert(`註冊成功！\n帳號：${account}\n請記住密碼：${password}`);
+    isRegisterMode = false;
+    toggleRegisterMode();
+    return;
+  }
+
+  // 登入
   if (account === 'admin' && password === '1234') {
     currentUser = {account};
     document.getElementById('memberTitle').textContent = `歡迎，${account}`;
@@ -333,6 +354,28 @@ document.getElementById('memberBtn').onclick = () => {
   }
 };
 
+function toggleRegisterMode() {
+  isRegisterMode = !isRegisterMode;
+  const title = document.getElementById('memberTitle');
+  const btn = document.getElementById('memberBtn');
+  const emailGroup = document.getElementById('emailGroup');
+  const toggleText = document.getElementById('toggleRegister');
+
+  if (isRegisterMode) {
+    title.textContent = '會員註冊';
+    btn.textContent = '註冊';
+    emailGroup.style.display = 'block';
+    toggleText.textContent = '已有帳號？點此登入';
+  } else {
+    title.textContent = '會員登入';
+    btn.textContent = '登入';
+    emailGroup.style.display = 'none';
+    toggleText.textContent = '還沒有帳號？點此註冊';
+  }
+}
+document.getElementById('toggleRegister').onclick = toggleRegisterMode;
+
+// 登出
 document.getElementById('memberBtn').addEventListener('click', function() {
   if (this.textContent === '登出') {
     currentUser = null;
@@ -342,6 +385,8 @@ document.getElementById('memberBtn').addEventListener('click', function() {
     document.getElementById('account').value = '';
     document.getElementById('password').value = '';
     document.getElementById('orderHistory').style.display = 'none';
+    isRegisterMode = false;
+    toggleRegisterMode();
   }
 });
 
@@ -410,8 +455,8 @@ fetch('products.json')
   })
   .then(data => {
     products = data;
-    renderCategories();   // 強制重新渲染分類
-    displayProducts();    // 顯示全部商品
+    renderCategories();
+    displayProducts();
     updateCartButton();
   })
   .catch(err => {
