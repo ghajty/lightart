@@ -16,7 +16,7 @@ header .top-buttons button:hover{background:#555;}
 #categoryToggle{cursor:pointer; background:#333; color:#fff; padding:8px; border-radius:5px; width:140px; text-align:center; margin:10px 0;}
 #categoryToggle:hover{background:#555;}
 #categoryList{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; display:none;}
-#categoryList button{padding:5px 10px; background:#666; border:none; color:#fff; border-radius:5px;}
+#categoryList button{padding:5px 10px; background:#666; border:none; color:#fff; border-radius:5px; cursor:pointer;}
 #categoryList button.active{background:#333;}
 #categoryList button:hover{background:#555;}
 .products{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;}
@@ -72,10 +72,20 @@ form button:hover{background:#555;}
 <div id="orderModal"></div>
 <div id="modalOverlay" class="overlay"></div>
 <script>
-// 同步之前完整功能：會員、產品分類、購物車、下單、歷史訂單、側邊欄
-// 確保購物車在有商品時才可開啟/關閉，且可以增減數量或刪除
-// 交易歷史、公司簡介與客服側邊欄可開關
-// 這裡可貼之前完整 JS 代碼，確保功能一致
+// JS 代碼，確保按鈕功能與產品顯示
+let products=[{id:1,name:"現代吊燈A",category:"吊燈",price:2500,img:"https://placekitten.com/300/180",desc:"適合客廳使用"},{id:2,name:"復古壁燈B",category:"壁燈",price:1200,img:"https://placekitten.com/301/180",desc:"適合走廊或臥室"},{id:3,name:"吸頂燈C",category:"吸頂燈",price:1800,img:"https://placekitten.com/302/180",desc:"節能又明亮"},{id:4,name:"投射燈D",category:"投射燈",price:900,img:"https://placekitten.com/303/180",desc:"可調整方向"},{id:5,name:"燈條E",category:"燈條",price:600,img:"https://placekitten.com/304/180",desc:"裝飾性強"},{id:6,name:"軌道燈F",category:"軌道燈",price:1500,img:"https://placekitten.com/305/180",desc:"適合展示空間"}];
+const categories=["全部商品","吊燈","壁燈","吸頂燈","投射燈","燈條","軌道燈"];
+let cart=[], currentMember=null;
+const productList=document.getElementById("productList"),categoryList=document.getElementById("categoryList"),cartToggleBtn=document.getElementById("cartToggleBtn"),checkoutSide=document.getElementById("checkoutSide");
+function displayProducts(filter="全部商品"){productList.innerHTML="";let filtered=filter==="全部商品"?products:products.filter(p=>p.category===filter);filtered.forEach(p=>{const div=document.createElement("div");div.className="product-card";div.innerHTML=`<img src='${p.img}'><h3>${p.name}</h3><p>${p.desc}</p><p>價格: $${p.price}</p><button onclick='addToCart(${p.id})'>加入購物車</button>`;productList.appendChild(div);});}
+displayProducts();
+categories.forEach(cat=>{const btn=document.createElement("button");btn.textContent=cat;btn.addEventListener("click",()=>{displayProducts(cat);categoryList.querySelectorAll("button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");});if(cat==="全部商品") btn.classList.add("active");categoryList.appendChild(btn);});
+function addToCart(id){let p=products.find(p=>p.id===id),exist=cart.find(c=>c.id===id);exist?exist.qty++:cart.push({...p,qty:1});updateCartToggle();}
+function updateCartToggle(){cart.length>0?cartToggleBtn.style.display="inline-block":cartToggleBtn.style.display="none";}
+cartToggleBtn.addEventListener("click",()=>{checkoutSide.style.display=checkoutSide.style.display==="block"?"none":"block";renderCart();document.getElementById("modalOverlay").style.display=checkoutSide.style.display==="block"?"block":"none";});
+function renderCart(){checkoutSide.innerHTML="<h2>購物車</h2>";if(cart.length===0){checkoutSide.innerHTML+="<p>購物車空空如也</p>";return;}cart.forEach((c,i)=>{const div=document.createElement("div");div.className="cart-item";div.innerHTML=`<span>${c.name} x ${c.qty} - $${c.price*c.qty}</span><div><button onclick='changeQty(${i},-1)'>-</button><button onclick='changeQty(${i},1)'>+</button><button onclick='removeItem(${i})'>刪除</button></div>`;checkoutSide.appendChild(div);});}
+function changeQty(i,d){cart[i].qty+=d;if(cart[i].qty<1)cart[i].qty=1;renderCart();}
+function removeItem(i){cart.splice(i,1);renderCart();updateCartToggle();}
 </script>
 </body>
 </html>
