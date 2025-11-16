@@ -7,13 +7,39 @@
 <style>
 /* 基礎樣式 */
 body {margin:0; font-family:Arial,sans-serif; background:#f5f5f5; color:#333;}
-header{background:#fff; display:flex; align-items:center; padding:10px 20px; border-bottom:1px solid #ddd; position:fixed; top:0; left:0; width:100%; z-index:1000; box-shadow:0 1px 5px rgba(0,0,0,0.1);}
+
+/* 自動避開 iPhone 頂部 UI */
+header {
+  background:#fff; 
+  display:flex; 
+  align-items:center; 
+  padding:10px 20px; 
+  border-bottom:1px solid #ddd; 
+  position:fixed; 
+  top:0; 
+  left:0; 
+  width:100%; 
+  z-index:1000; 
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+  padding-top: calc(10px + env(safe-area-inset-top)); /* 關鍵：避開頂部 UI */
+  box-sizing: border-box;
+}
 header img{width:50px;height:50px;border-radius:50%;}
 header h1{margin:0 10px; font-size:1.8em; color:#333;}
 header .top-buttons{display:flex; align-items:center; gap:5px; margin-left:20px;}
 header .top-buttons button{padding:5px 10px; border:none; border-radius:5px; background:#333; color:#fff; cursor:pointer; font-size:0.9em;}
 header .top-buttons button:hover{background:#555;}
-.container{max-width:1000px; margin:100px auto 40px; padding:0 20px;}
+
+/* 內容從 header 底部開始，自動避開安全區 */
+.container {
+  max-width:1000px; 
+  margin:0 auto; 
+  padding:20px;
+  /* 動態計算：header 高度 + safe-area */
+  margin-top: calc(80px + env(safe-area-inset-top)); /* 80px = header 高度估計 */
+}
+
+/* 其餘樣式不變 */
 #categoryToggle{cursor:pointer; background:#333; color:#fff; padding:8px; border-radius:5px; width:140px; text-align:center; margin:10px 0;}
 #categoryToggle:hover{background:#555;}
 #categoryList{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; display:none;}
@@ -52,9 +78,10 @@ form button:hover{background:#555;}
   display: none;
   box-shadow: -2px 0 10px rgba(0,0,0,0.1);
   overflow: hidden;
+  padding-top: env(safe-area-inset-top); /* 側邊欄也避開頂部 */
 }
 
-/* 購物車專用樣式（手機安全區 + 滾動） */
+/* 購物車專用樣式 */
 .cart-header {
   position: sticky;
   top: 0;
@@ -65,6 +92,7 @@ form button:hover{background:#555;}
   font-weight: bold;
   font-size: 1.1em;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  padding-top: calc(15px + env(safe-area-inset-top));
 }
 .cart-content {
   height: calc(100% - 60px);
@@ -83,16 +111,6 @@ form button:hover{background:#555;}
   border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer;
 }
 .cart-item button[data-action="del"] {color: #e74c3c; font-size: 0.8em; width: auto; padding: 0 6px;}
-
-/* 手機安全區 */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .cart-header {
-    padding-top: calc(15px + env(safe-area-inset-top));
-  }
-  .side-panel {
-    padding-top: env(safe-area-inset-top);
-  }
-}
 
 /* 其他側邊欄內容 */
 .side-panel > h2 {
@@ -207,10 +225,16 @@ const memberForm = document.getElementById("memberForm");
 const historyListSide = document.getElementById("historyListSide");
 
 // 初始化
+updateCartButton();
+updateMemberUI();
+renderCategories();
+displayProducts();
+renderHistory();
+
+// === 其餘 JS 完全不變（省略以節省篇幅） ===
 function updateCartButton() {
   cartToggleBtn.style.display = cart.length > 0 ? "inline-block" : "none";
 }
-
 function updateMemberUI() {
   if (currentMember) {
     welcomeMsg.textContent = `歡迎，${currentMember.username}！`;
@@ -223,7 +247,6 @@ function updateMemberUI() {
   }
   renderHistory();
 }
-
 function renderCategories() {
   categories.forEach(cat => {
     const btn = document.createElement("button");
@@ -237,7 +260,6 @@ function renderCategories() {
     categoryList.appendChild(btn);
   });
 }
-
 function displayProducts(filter = "全部商品") {
   productList.innerHTML = "";
   const filtered = filter === "全部商品" ? products : products.filter(p => p.category === filter);
@@ -254,7 +276,6 @@ function displayProducts(filter = "全部商品") {
     productList.appendChild(div);
   });
 }
-
 function renderHistory() {
   historyListSide.innerHTML = "";
   const userOrders = currentMember ? orderHistory.filter(o => o.member === currentMember.username) : [];
@@ -269,21 +290,12 @@ function renderHistory() {
   }
 }
 
-// 初始化調用
-updateCartButton();
-updateMemberUI();
-renderCategories();
-displayProducts();
-renderHistory();
-
-// 分類切換
 document.getElementById("categoryToggle").addEventListener("click", () => {
   const isFlex = categoryList.style.display === "flex";
   categoryList.style.display = isFlex ? "none" : "flex";
   document.getElementById("categoryToggle").textContent = isFlex ? "顯示分類 ▼" : "隱藏分類 ▲";
 });
 
-// 購物車系統
 function addToCart(id) {
   const p = products.find(p => p.id === id);
   const exist = cart.find(c => c.id === id);
@@ -302,7 +314,6 @@ function openCart() {
 
 function renderCart() {
   checkoutSide.innerHTML = '';
-  // 標題列
   const header = document.createElement('div');
   header.className = 'cart-header';
   header.innerHTML = `
@@ -312,7 +323,7 @@ function renderCart() {
     </div>
   `;
   checkoutSide.appendChild(header);
-  // 內容區
+
   const content = document.createElement('div');
   content.className = 'cart-content';
   if (cart.length === 0) {
@@ -345,7 +356,7 @@ function renderCart() {
     content.appendChild(totalDiv);
   }
   checkoutSide.appendChild(content);
-  // 事件
+
   header.querySelector('#cartCloseBtn').onclick = closeAllPanels;
   checkoutSide.onclick = (e) => {
     const btn = e.target;
@@ -397,7 +408,6 @@ function saveCart() {
   localStorage.setItem('catlamp_cart', JSON.stringify(cart));
 }
 
-// 會員系統
 memberForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const username = document.getElementById('memberUsername').value.trim();
@@ -434,7 +444,6 @@ logoutBtn.addEventListener('click', () => {
   updateMemberUI();
 });
 
-// 側邊欄控制
 cartToggleBtn.addEventListener('click', openCart);
 introBtn.addEventListener('click', () => openPanel(introSide));
 historyBtn.addEventListener('click', () => openPanel(historySide));
@@ -449,12 +458,10 @@ function openPanel(panel) {
   panel.style.display = "block";
   modalOverlay.style.display = "block";
 }
-
 function closeAllPanels() {
   document.querySelectorAll('.side-panel').forEach(p => p.style.display = 'none');
   modalOverlay.style.display = 'none';
 }
-
 modalOverlay.addEventListener('click', closeAllPanels);
 
 window.addEventListener('load', () => {
