@@ -5,47 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>商品詳情 - 貓貓燈具</title>
 <style>
-  body {
-    margin:0; padding:0; font-family:Arial,sans-serif; background:#f9f9f9; color:#333;
-    padding-top:env(safe-area-inset-top,0px);
-  }
-  .container {
-    max-width:1000px; margin:0 auto; padding:20px; background:#fff; min-height:100dvh;
-    box-shadow:0 0 10px rgba(0,0,0,0.05); border-radius:8px; margin-top:20px;
-  }
-  .back-btn {
-    display:inline-block; margin-bottom:20px; padding:8px 16px; background:#333; color:#fff;
-    text-decoration:none; border-radius:5px; font-size:0.9em;
-  }
+  body {margin:0; padding:0; font-family:Arial,sans-serif; background:#f9f9f9; color:#333;}
+  .container {max-width:1000px; margin:0 auto; padding:20px; background:#fff; min-height:100dvh; box-shadow:0 0 10px rgba(0,0,0,0.05); border-radius:8px; margin-top:20px;}
+  .back-btn {display:inline-block; margin-bottom:20px; padding:8px 16px; background:#333; color:#fff; text-decoration:none; border-radius:5px; font-size:0.9em;}
   .back-btn:hover {background:#555;}
-  .product-detail {
-    display:grid; grid-template-columns:1fr 1fr; gap:30px; align-items:start;
-  }
-  .product-img {
-    width:100%; max-width:500px; height:auto; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);
-    object-fit:cover;
-  }
+  .content {display:grid; grid-template-columns:1fr 1fr; gap:30px; align-items:start;}
+  .product-gallery {margin-bottom:20px;}
+  .main-img-container {position:relative; max-width:500px; margin:0 auto;}
+  .main-img-container img {width:100%; height:auto; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);}
+Vectorizer
+  .prev-btn, .next-btn {position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; width:40px; height:40px; border-radius:50%; font-size:1.5em; cursor:pointer;}
+  .prev-btn {left:10px;}
+  .next-btn {right:10px;}
+  .prev-btn:hover, .next-btn:hover {background:rgba(0,0,0,0.8);}
+  .thumbnail-container {display:flex; gap:10px; margin-top:15px; justify-content:center; flex-wrap:wrap;}
+  .thumbnail-container img {width:80px; height:80px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid #ddd; transition:border 0.3s;}
+  .thumbnail-container img.active {border-color:#333;}
   .product-info h1 {margin:0 0 15px; font-size:2em; color:#222;}
   .product-info .category {color:#e74c3c; font-weight:bold; margin-bottom:10px;}
   .product-info .price {font-size:1.8em; font-weight:bold; color:#e74c3c; margin:15px 0;}
   .product-info .desc {line-height:1.6; color:#555; margin-bottom:20px;}
-  .add-to-cart {
-    padding:12px 30px; background:#333; color:#fff; border:none; border-radius:6px;
-    font-size:1.1em; cursor:pointer; width:100%; max-width:300px;
-  }
+  .add-to-cart {padding:12px 30px; background:#333; color:#fff; border:none; border-radius:6px; font-size:1.1em; cursor:pointer; width:100%; max-width:300px;}
   .add-to-cart:hover {background:#555;}
-  @media (max-width:768px) {
-    .product-detail {grid-template-columns:1fr;}
-    .product-img {max-width:100%; height:auto;}
-  }
+  @media (max-width:768px) {.content {grid-template-columns:1fr;} .main-img-container {max-width:100%;}}
 </style>
 </head>
 <body>
 
 <div class="container">
   <a href="index.html" class="back-btn">← 回商品列表</a>
-  <div class="product-detail">
-    <img id="detailImg" class="product-img" src="" alt="">
+  <div class="content">
+    <div class="product-gallery">
+      <div class="main-img-container">
+        <img id="mainImg" src="" alt="" class="product-img">
+        <button class="prev-btn">◀</button>
+        <button class="next-btn">▶</button>
+      </div>
+      <div class="thumbnail-container" id="thumbnails"></div>
+    </div>
     <div class="product-info">
       <h1 id="detailName"></h1>
       <div class="category" id="detailCategory"></div>
@@ -57,11 +54,9 @@
 </div>
 
 <script>
-// === 讀取 URL 參數 ===
 const urlParams = new URLSearchParams(window.location.search);
 const productId = parseInt(urlParams.get('id'));
 
-// === 從 products.json 載入商品 ===
 fetch('products.json')
   .then(res => res.json())
   .then(products => {
@@ -71,14 +66,43 @@ fetch('products.json')
       return;
     }
 
-    // 填入資料
-    document.getElementById('detailImg').src = product.img;
     document.getElementById('detailName').textContent = product.name;
     document.getElementById('detailCategory').textContent = product.category;
     document.getElementById('detailPrice').textContent = `$${product.price}`;
     document.getElementById('detailDesc').textContent = product.desc;
 
-    // 加入購物車
+    // === 多圖輪播 ===
+    let currentIndex = 0;
+    const mainImg = document.getElementById('mainImg');
+    const thumbnails = document.getElementById('thumbnails');
+
+    function showImage(index) {
+      mainImg.src = product.imgs[index];
+      thumbnails.querySelectorAll('img').forEach((t, i) => {
+        t.classList.toggle('active', i === index);
+      });
+    }
+
+    product.imgs.forEach((img, i) => {
+      const thumb = document.createElement('img');
+      thumb.src = img;
+      thumb.onclick = () => { currentIndex = i; showImage(i); };
+      if (i === 0) thumb.classList.add('active');
+      thumbnails.appendChild(thumb);
+    });
+
+    showImage(0);
+
+    document.querySelector('.prev-btn').onclick = () => {
+      currentIndex = (currentIndex - 1 + product.imgs.length) % product.imgs.length;
+      showImage(currentIndex);
+    };
+    document.querySelector('.next-btn').onclick = () => {
+      currentIndex = (currentIndex + 1) % product.imgs.length;
+      showImage(currentIndex);
+    };
+
+    // === 加入購物車 ===
     document.getElementById('addToCartBtn').onclick = () => {
       let cart = JSON.parse(localStorage.getItem('catlamp_cart') || '[]');
       const exist = cart.find(x => x.id === product.id);
