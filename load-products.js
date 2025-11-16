@@ -42,10 +42,25 @@
     list.innerHTML = "";
     const filtered = filter === "全部商品" ? products : products.filter(p => p.category === filter);
     filtered.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "product-card";
-      div.innerHTML = `<img src='${p.img}' alt='${p.name}'><h3>${p.name}</h3><p>${p.desc}</p><p>價格: $${p.price}</p><button onclick='addToCart(${p.id})'>加入購物車</button>`;
-      list.appendChild(div);
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.style.cursor = "pointer";
+      card.innerHTML = `
+        <img src='${p.img}' alt='${p.name}'>
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <p class="price">$${p.price}</p>
+        <button class="add-btn" data-id="${p.id}">加入購物車</button>
+      `;
+      card.onclick = (e) => {
+        if (e.target.classList.contains('add-btn')) return;
+        window.location.href = `product-detail.html?id=${p.id}`;
+      };
+      card.querySelector('.add-btn').onclick = (e) => {
+        e.stopPropagation();
+        addToCart(p.id);
+      };
+      list.appendChild(card);
     });
   };
 
@@ -56,6 +71,6 @@
     if (exist) exist.qty++; else cart.push({...p, qty:1});
     saveCart();
     updateCartButton();
-    openCart(); // 直接開啟並刷新
+    if (typeof openCart === 'function') openCart();
   };
 })();
