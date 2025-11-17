@@ -6,6 +6,7 @@
 <title>貓貓燈具</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 <style>
+/* ---------- 基本樣式 ---------- */
 body {margin:0; font-family:Arial,sans-serif; background:#f5f5f5;}
 header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-content:space-between; align-items:center;}
 .left-nav {display:flex; align-items:center; gap:20px;}
@@ -32,6 +33,12 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
 .cart-total {font-size:18px; margin-bottom:15px;}
 .cart-items {overflow-y:auto; flex-grow:1;}
 .cart-item {display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #ddd;}
+
+/* 彈窗 */
+.modal-bg {display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;}
+.modal {background:#fff; padding:20px; border-radius:8px; min-width:300px; max-width:90%;}
+.modal h2 {margin-top:0;}
+.modal button.close-modal {margin-top:10px; background:#333; color:#fff; border:none; padding:6px 12px; border-radius:5px; cursor:pointer;}
 </style>
 </head>
 <body>
@@ -43,6 +50,7 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
       <a id="aboutLink">公司簡介</a>
       <a id="memberToggleBtn">會員登入/註冊</a>
       <a id="supportBtn">客服</a>
+      <a href="admin.html">後台管理</a>
     </div>
   </div>
   <div class="cart-icon" id="cartIcon">
@@ -65,38 +73,37 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
   <div class="cart-items" id="cartItems"></div>
 </div>
 
+<!-- 模態彈窗 -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalContent">
+    <h2 id="modalTitle"></h2>
+    <div id="modalBody"></div>
+    <button class="close-modal" id="closeModalBtn">關閉</button>
+  </div>
+</div>
+
 <script src="load-products.js"></script>
-
+<script src="cart.js"></script>
 <script>
-// 公司簡介、會員、客服按鈕暫時 alert
-document.getElementById('aboutLink').onclick = ()=>alert('這是公司簡介內容');
-document.getElementById('memberToggleBtn').onclick = ()=>alert('會員登入/註冊彈窗');
-document.getElementById('supportBtn').onclick = ()=>alert('客服聯絡方式');
-
-// 購物車資料
-let cart = JSON.parse(localStorage.getItem('catlamp_cart') || '[]');
-
-function updateCartButton(){
-  document.getElementById('cartCount').textContent = cart.reduce((a,b)=>a+b.qty,0);
-  const cartItems = document.getElementById('cartItems');
-  cartItems.innerHTML = '';
-  let total = 0;
-  cart.forEach(item=>{
-    total += item.price*item.qty;
-    const div = document.createElement('div');
-    div.className = 'cart-item';
-    div.innerHTML = `<span>${item.name} x${item.qty}</span><span>$${item.price*item.qty}</span>`;
-    cartItems.appendChild(div);
-  });
-  document.getElementById('cartTotal').textContent = `$${total}`;
+// 彈窗函數
+function showModal(title, body){
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalBg').style.display='flex';
 }
+document.getElementById('closeModalBtn').onclick = ()=>{document.getElementById('modalBg').style.display='none';};
 
-updateCartButton();
+// 公司簡介、會員、客服
+document.getElementById('aboutLink').onclick = ()=>showModal('公司簡介','<p>我們是貓貓燈具，專注於居家燈飾設計。</p>');
+document.getElementById('memberToggleBtn').onclick = ()=>showModal('會員登入/註冊',`
+  <form id="loginForm">
+    <input type="text" placeholder="帳號" id="username"><br><br>
+    <input type="password" placeholder="密碼" id="password"><br><br>
+    <button type="submit">登入</button>
+  </form>
+`);
+document.getElementById('supportBtn').onclick = ()=>showModal('客服','<p>聯絡方式：service@catlamp.com</p>');
 
-// 購物車側欄控制
-document.getElementById('cartIcon').onclick = ()=>document.getElementById('cartSidebar').classList.add('open');
-document.getElementById('closeCart').onclick = ()=>document.getElementById('cartSidebar').classList.remove('open');
-document.getElementById('checkoutBtn').onclick = ()=>alert('結帳功能暫未實作');
 </script>
 
 </body>
