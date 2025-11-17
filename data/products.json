@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "name": "現代吊燈A",
+    "category": "吊燈",
+    "price": 2500,
+    "stock": 10,
+    "imgs": ["https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=吊燈A"],
+    "desc": "適合客廳使用",
+    "likes": 0,
+    "reviews": []
+  },
+  {
+    "id": 2,
+    "name": "復古壁燈B",
+    "category": "壁燈",
+    "price": 1200,
+    "stock": 5,
+    "imgs": ["https://via.placeholder.com/300x300/45B7D1/FFFFFF?text=壁燈B"],
+    "desc": "適合走廊",
+    "likes": 0,
+    "reviews": []
+  },
+  {
+    "id": 3,
+    "name": "工業風落地燈C",
+    "category": "落地燈",
+    "price": 3200,
+    "stock": 8,
+    "imgs": ["https://via.placeholder.com/300x300/FFC300/FFFFFF?text=落地燈C"],
+    "desc": "適合書房使用",
+    "likes": 0,
+    "reviews": []
+  }
+]
