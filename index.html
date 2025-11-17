@@ -33,249 +33,50 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
 .cart-total {font-size:18px; margin-bottom:15px;}
 .cart-items {overflow-y:auto; flex-grow:1;}
 .cart-item {display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #ddd;}
-
-/* ------------------ 會員系統 ------------------ */
-.member-section {padding:15px; background:#fff; margin:15px; border-radius:10px; max-width:400px;}
-.member-section h3 {margin-bottom:10px;}
-.form-group {margin-bottom:10px;}
-.form-group input {width:100%; padding:8px; border:1px solid #ccc; border-radius:5px;}
-.member-btn {width:100%; padding:10px; background:#e74c3c; color:#fff; border:none; border-radius:5px; cursor:pointer;}
-.logout-btn {background:#999; margin-top:5px;}
-.toggle-register {font-size:0.85em; color:#0066cc; cursor:pointer; text-align:center; margin-top:5px;}
-
-/* ------------------ 管理員新增商品區 ------------------ */
-.admin-add {display:none; margin:15px; padding:15px; background:#fff; border-radius:10px; max-width:400px;}
-.admin-add h3 {margin-bottom:10px;}
-.admin-add .form-group input {width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px;}
-.admin-add .add-btn {background:#333; color:white; padding:8px 12px; border:none; border-radius:5px; cursor:pointer;}
-
-/* ------------------ 彈窗 ------------------ */
-.modal {position:fixed; top:0; left:0; width:100%; height:100vh; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:0.3s; z-index:1000;}
-.modal.open {opacity:1; pointer-events:auto;}
-.modal-content {background:#fff; width:90%; max-width:500px; border-radius:12px; padding:20px; max-height:80vh; overflow-y:auto; position:relative;}
-.close-modal {position:absolute; top:10px; right:15px; font-size:1.5em; cursor:pointer; color:#999;}
-.close-modal:hover {color:#333;}
-
-/* ------------------ 客服 ------------------ */
-.cs-button {position:fixed; bottom:20px; right:20px; width:56px; height:56px; background:#333; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5em; cursor:pointer; z-index:999;}
-.cs-button:hover {background:#555; transform:scale(1.1);}
-
-/* ------------------ 響應式 ------------------ */
-@media (max-width:768px){.product-card img{width:70%;}}
-</style>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>貓貓燈具</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header>
-  <div class="left-nav">
-    <h1>貓貓燈具</h1>
-    <div class="nav-links">
-      <a id="aboutLink">公司簡介</a>
-      <a id="memberToggleBtn">會員登入/註冊</a>
-    </div>
-  </div>
-  <div class="cart-icon" id="cartIcon">
-    <i class="fas fa-shopping-cart"></i>
-    <span class="cart-count" id="cartCount">0</span>
-  </div>
+  <h1>貓貓燈具</h1>
+  <nav>
+    <button id="aboutBtn">公司簡介</button>
+    <button id="faqBtn">FAQ</button>
+    <button id="contactBtn">客服</button>
+    <button id="loginBtn">會員登入/註冊</button>
+    <span class="cart-icon" id="cartIcon">購物車(<span id="cartCount">0</span>)</span>
+  </nav>
 </header>
 
-<!-- 商品列表 -->
-<div class="product-container" id="productList"></div>
+<section>
+  <div id="categoryList"></div>
+  <select id="sortSelect">
+    <option value="default">預設排序</option>
+    <option value="priceAsc">價格由低到高</option>
+    <option value="priceDesc">價格由高到低</option>
+    <option value="newest">最新商品</option>
+  </select>
+</section>
 
-<!-- 會員登入/註冊 -->
-<div class="member-section" id="memberSection">
-  <h3 id="memberTitle">會員登入</h3>
-  <div class="form-group">
-    <input type="text" id="account" placeholder="帳號">
-  </div>
-  <div class="form-group">
-    <input type="password" id="password" placeholder="密碼">
-  </div>
-  <button class="member-btn" id="memberBtn">登入</button>
-  <div class="toggle-register" id="toggleRegister">還沒有帳號？點此註冊</div>
+<main id="productList"></main>
+
+<!-- 購物車 -->
+<div id="cartSidebar" class="cart-sidebar">
+  <h2>購物車</h2>
+  <div id="cartItems"></div>
+  <div>總計: $<span id="cartTotal">0</span></div>
+  <button id="checkoutBtn">結帳</button>
+  <button id="closeCart">關閉</button>
 </div>
 
-<!-- 管理員新增商品 -->
-<div class="admin-add" id="adminAddSection">
-  <h3>新增商品（管理員專用）</h3>
-  <div class="form-group"><input type="text" id="newName" placeholder="商品名稱"></div>
-  <div class="form-group"><input type="text" id="newCategory" placeholder="分類"></div>
-  <div class="form-group"><input type="number" id="newPrice" placeholder="價格"></div>
-  <div class="form-group"><input type="text" id="newImg" placeholder="圖片 URL"></div>
-  <div class="form-group"><input type="text" id="newDesc" placeholder="描述"></div>
-  <button class="add-btn" id="addProductBtn">新增商品</button>
-</div>
-
-<!-- 公司簡介彈窗 -->
-<div class="modal" id="aboutModal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeModal('aboutModal')">×</span>
-    <h2>公司簡介</h2>
-    <p>貓貓燈具成立於2020年，專注北歐風與極簡設計燈飾，提供高品質、平價的居家照明方案。</p>
-  </div>
-</div>
-
-<!-- 客服按鈕 -->
-<div class="cs-button" id="csButton">
-  <i class="fas fa-headset"></i>
-</div>
-
-<!-- 客服視窗 -->
-<div class="modal" id="csModal">
-  <div class="modal-content">
-    <span class="close-modal" onclick="closeModal('csModal')">×</span>
-    <h2>客服中心</h2>
-    <p><strong>電話：</strong>02-1234-5678</p>
-    <p><strong>Line ID：</strong>@catlamp</p>
-    <p><strong>服務時間：</strong>週一至週五 09:00-18:00</p>
-  </div>
-</div>
-
-<!-- 購物車側欄 -->
-<div class="cart-sidebar" id="cartSidebar">
-  <div class="cart-header">
-    <h2>購物車</h2>
-    <i class="fas fa-times close-cart" id="closeCart"></i>
-  </div>
-  <button class="checkout-btn" id="checkoutBtn">結帳</button>
-  <div class="cart-total">總計: <span id="cartTotal">$0</span></div>
-  <div class="cart-items" id="cartItems"></div>
-</div>
-
-<script>
-let products = [
-  {id:1,name:"現代吊燈A",category:"吊燈",price:2500,imgs:["https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=吊燈A"],desc:"適合客廳使用"},
-  {id:2,name:"復古壁燈B",category:"壁燈",price:1200,imgs:["https://via.placeholder.com/300x300/45B7D1/FFFFFF?text=壁燈B"],desc:"適合走廊"},
-  {id:3,name:"簡約桌燈C",category:"桌燈",price:800,imgs:["https://via.placeholder.com/300x300/FFD93D/FFFFFF?text=桌燈C"],desc:"適合書房"}
-];
-
-let cart = JSON.parse(localStorage.getItem("catlamp_cart") || "[]");
-let currentUser = null;
-let isRegisterMode = false;
-
-// ------------------ 會員登入/註冊 ------------------
-function toggleRegisterMode() {
-  isRegisterMode = !isRegisterMode;
-  document.getElementById("memberTitle").textContent = isRegisterMode?"會員註冊":"會員登入";
-  document.getElementById("memberBtn").textContent = isRegisterMode?"註冊":"登入";
-  document.getElementById("toggleRegister").textContent = isRegisterMode?"已有帳號？點此登入":"還沒有帳號？點此註冊";
-}
-document.getElementById("toggleRegister").onclick = toggleRegisterMode;
-
-document.getElementById("memberBtn").onclick = ()=>{
-  const account=document.getElementById("account").value.trim();
-  const password=document.getElementById("password").value;
-  if(!account||!password){alert("請填寫帳號與密碼");return;}
-  let users=JSON.parse(localStorage.getItem("catlamp_users")||"[]");
-
-  if(isRegisterMode){
-    if(users.find(u=>u.account===account)){alert("帳號已存在");return;}
-    users.push({account,password,role:"member"});
-    localStorage.setItem("catlamp_users",JSON.stringify(users));
-    alert("註冊成功");
-    toggleRegisterMode();
-    return;
-  }
-
-  const user=users.find(u=>u.account===account&&u.password===password);
-  if(user){
-    currentUser=user;
-    alert("登入成功");
-    // 顯示管理員新增商品區
-    document.getElementById("adminAddSection").style.display=(user.account==="admin")?"block":"none";
-  }else{
-    alert("帳號或密碼錯誤");
-  }
-};
-
-// ------------------ 商品渲染 ------------------
-function renderProducts(){
-  const list=document.getElementById("productList");
-  list.innerHTML="";
-  products.forEach(p=>{
-    const card=document.createElement("div");
-    card.className="product-card";
-    card.innerHTML=`
-      <img src="${p.imgs[0]}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p class="price">$${p.price}</p>
-      <button class="add-cart-btn" data-id="${p.id}">加入購物車</button>
-    `;
-    card.querySelector(".add-cart-btn").onclick=e=>{
-      addToCart(p.id);
-    };
-    list.appendChild(card);
-  });
-}
-
-// ------------------ 購物車 ------------------
-function saveCart(){localStorage.setItem("catlamp_cart",JSON.stringify(cart));}
-function updateCartButton(){
-  const count=cart.reduce((sum,item)=>sum+item.qty,0);
-  document.getElementById("cartCount").textContent=count;
-}
-function renderCart(){
-  const items=document.getElementById("cartItems");
-  items.innerHTML="";
-  let total=0;
-  cart.forEach(item=>{
-    total+=item.price*item.qty;
-    const div=document.createElement("div");
-    div.className="cart-item";
-    div.innerHTML=`<span>${item.name}</span><span>$${item.price} x ${item.qty}</span>`;
-    items.appendChild(div);
-  });
-  document.getElementById("cartTotal").textContent=`$${total}`;
-}
-function addToCart(id){
-  const p=products.find(x=>x.id===id);
-  if(!p)return;
-  const exist=cart.find(x=>x.id===id);
-  if(exist) exist.qty++; else cart.push({...p,qty:1});
-  saveCart(); updateCartButton(); renderCart();
-}
-document.getElementById("checkoutBtn").onclick=()=>{
-  if(!currentUser){alert("請先登入會員"); return;}
-  if(cart.length===0){alert("購物車是空的"); return;}
-  const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
-  alert(`訂單已送出\n總金額:$${total}`);
-  cart=[]; saveCart(); updateCartButton(); renderCart();
-};
-
-// ------------------ 側欄控制 ------------------
-document.getElementById("cartIcon").onclick=()=>{document.getElementById("cartSidebar").classList.add("open"); renderCart();}
-document.getElementById("closeCart").onclick=()=>{document.getElementById("cartSidebar").classList.remove("open");};
-
-// ------------------ 彈窗 ------------------
-function openModal(id){document.getElementById(id).classList.add("open");}
-function closeModal(id){document.getElementById(id).classList.remove("open");}
-document.getElementById("aboutLink").onclick=()=>openModal("aboutModal");
-document.getElementById("csButton").onclick=()=>openModal("csModal");
-
-// ------------------ 管理員新增商品 ------------------
-document.getElementById("addProductBtn").onclick=()=>{
-  if(!currentUser||currentUser.account!=="admin"){alert("只有管理員可新增"); return;}
-  const name=document.getElementById("newName").value.trim();
-  const cat=document.getElementById("newCategory").value.trim();
-  const price=parseFloat(document.getElementById("newPrice").value);
-  const img=document.getElementById("newImg").value.trim();
-  const desc=document.getElementById("newDesc").value.trim();
-  if(!name||!cat||!price||!img){alert("請完整填寫"); return;}
-  const newProduct={id:products.length+1,name,category:cat,price,imgs:[img],desc};
-  products.push(newProduct);
-  renderProducts();
-  alert("商品已新增");
-  document.getElementById("newName").value="";
-  document.getElementById("newCategory").value="";
-  document.getElementById("newPrice").value="";
-  document.getElementById("newImg").value="";
-  document.getElementById("newDesc").value="";
-};
-
-// ------------------ 初始化 ------------------
-renderProducts();
-updateCartButton();
-</script>
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
+
