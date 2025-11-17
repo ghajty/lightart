@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>貓貓燈具</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>貓貓燈具</h1>
+  <nav>
+    <button id="aboutBtn">公司簡介</button>
+    <button id="loginBtn">會員登入/註冊</button>
+    <button id="contactBtn">客服聯絡</button>
+    <div class="cart-icon" id="cartIcon">
+      <i class="fas fa-shopping-cart"></i><span id="cartCount">0</span>
+    </div>
+  </nav>
+</header>
+
+<!-- Banner -->
+<div id="bannerContainer"></div>
+
+<!-- 篩選與排序 -->
+<div id="categoryList"></div>
+<select id="sortSelect">
+  <option value="">排序</option>
+  <option value="price-asc">價格低→高</option>
+  <option value="price-desc">價格高→低</option>
+  <option value="newest">最新商品</option>
+</select>
+
+<!-- 商品列表 -->
+<div id="productList" class="product-container"></div>
+
+<!-- 購物車 -->
+<div id="cartSidebar" class="cart-sidebar">
+  <div>
+    <h2>購物車</h2>
+    <i id="closeCart" class="fas fa-times"></i>
+  </div>
+  <div id="cartItems"></div>
+  <div id="cartTotal">$0</div>
+  <button id="checkoutBtn">結帳</button>
+</div>
+
+<!-- 公司簡介彈窗 -->
+<div id="aboutModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeAbout">&times;</span>
+    <h2>公司簡介</h2>
+    <p>我們是專業貓貓燈具製造商，提供各種吊燈、壁燈...</p>
+    <img src="https://via.placeholder.com/400x200" alt="公司">
+    <video controls width="400">
+      <source src="intro.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+
+<!-- 客服表單彈窗 -->
+<div id="contactModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeContact">&times;</span>
+    <h2>聯絡客服</h2>
+    <p>線上聊天：<a href="https://m.me/yourpage" target="_blank">Messenger</a> / <a href="https://line.me/R/ti/p/yourlineid" target="_blank">Line</a></p>
+    <form id="contactForm">
+      <input type="text" placeholder="姓名" id="contactName" required>
+      <input type="email" placeholder="Email" id="contactEmail" required>
+      <textarea placeholder="訊息" id="contactMsg" required></textarea>
+      <button type="submit">送出</button>
+    </form>
+    <h3>常見問題 FAQ</h3>
+    <p>Q1: 如何購買？<br>A1: 選擇商品加入購物車結帳即可。</p>
+  </div>
+</div>
+
+<script src="js/main.js"></script>
+<script src="js/product-detail.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>
