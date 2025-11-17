@@ -4,23 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>商品詳情 - 貓貓燈具</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 <style>
 body {margin:0; padding:0; font-family:Arial,sans-serif; background:#f9f9f9; color:#333;}
-header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-content:space-between; align-items:center;}
-.left-nav {display:flex; align-items:center; gap:20px;}
-.nav-links a {color:white; margin-left:15px; cursor:pointer; text-decoration:none;}
-.cart-icon {position:relative; cursor:pointer;}
-.cart-count {position:absolute; top:-8px; right:-8px; background:red; color:white; padding:2px 6px; border-radius:50%; font-size:12px;}
-.container {max-width:1000px; margin:20px auto; padding:20px; background:#fff; min-height:80vh; box-shadow:0 0 10px rgba(0,0,0,0.05); border-radius:8px;}
-.back-btn {display:inline-block; margin-bottom:20px; padding:8px 16px; background:#333; color:#fff; text-decoration:none; border-radius:5px; font-size:0.9em;}
+.container {max-width:1000px; margin:20px auto; padding:20px; background:#fff; border-radius:8px; min-height:80vh; box-shadow:0 0 10px rgba(0,0,0,0.05);}
+.back-btn {display:inline-block; margin-bottom:20px; padding:8px 16px; background:#333; color:#fff; text-decoration:none; border-radius:5px;}
 .back-btn:hover {background:#555;}
 .content {display:grid; grid-template-columns:1fr 1fr; gap:30px; align-items:start;}
-.product-gallery {margin-bottom:20px;}
 .main-img-container {position:relative; max-width:500px; margin:0 auto;}
-.main-img-container img {width:100%; height:auto; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);}
+.main-img-container img {width:100%; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);}
 .prev-btn, .next-btn {position:absolute; top:50%; transform:translateY(-50%); background:#333; color:white; border:none; width:40px; height:40px; border-radius:50%; font-size:1.5em; cursor:pointer;}
-.prev-btn {left:10px;} .next-btn {right:10px;}
+.prev-btn {left:10px;}
+.next-btn {right:10px;}
 .prev-btn:hover, .next-btn:hover {background:#555;}
 .thumbnail-container {display:flex; gap:10px; margin-top:15px; justify-content:center; flex-wrap:wrap;}
 .thumbnail-container img {width:80px; height:80px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid #ddd; transition:border 0.3s;}
@@ -31,48 +25,17 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
 .product-info .desc {line-height:1.6; color:#555; margin-bottom:20px;}
 .add-to-cart {padding:12px 30px; background:#333; color:#fff; border:none; border-radius:6px; font-size:1.1em; cursor:pointer; width:100%; max-width:300px;}
 .add-to-cart:hover {background:#555;}
-@media (max-width:768px) {.content {grid-template-columns:1fr;} .main-img-container {max-width:100%;}}
-
-/* ------------------ 購物車 ------------------ */
-.cart-sidebar {position:fixed; top:0; right:0; width:320px; max-width:100%; background:#fff; box-shadow:-2px 0 6px rgba(0,0,0,0.2); padding:20px; height:auto; max-height:100vh; display:flex; flex-direction:column; transform:translateX(100%); transition:0.3s; z-index:999;}
-.cart-sidebar.open {transform:translateX(0);}
-.cart-header {display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
-.close-cart {cursor:pointer;}
-.checkout-btn {background:#000; color:#fff; border:none; padding:12px; width:100%; cursor:pointer; margin-bottom:15px;}
-.cart-total {font-size:18px; margin-bottom:15px;}
-.cart-items {overflow-y:auto; flex-grow:1;}
-.cart-item {display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #ddd;}
-
-/* ------------------ Modal ------------------ */
-.modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;}
-.modal-content {background:#fff; padding:20px; border-radius:8px; max-width:400px; width:90%; position:relative;}
-.modal-content h2 {margin-top:0;}
-.modal-close {position:absolute; top:10px; right:15px; cursor:pointer; font-size:1.2em; font-weight:bold;}
+@media (max-width:768px){.content {grid-template-columns:1fr;}.main-img-container {max-width:100%;}}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="left-nav">
-    <h1>貓貓燈具</h1>
-    <div class="nav-links">
-      <a id="aboutLink">公司簡介</a>
-      <a id="memberToggleBtn">會員登入/註冊</a>
-      <a id="serviceBtn">客服</a>
-    </div>
-  </div>
-  <div class="cart-icon" id="cartIcon">
-    <i class="fas fa-shopping-cart"></i>
-    <span class="cart-count" id="cartCount">0</span>
-  </div>
-</header>
 
 <div class="container">
   <a href="index.html" class="back-btn">← 回商品列表</a>
   <div class="content">
     <div class="product-gallery">
       <div class="main-img-container">
-        <img id="mainImg" src="" alt="" class="product-img">
+        <img id="mainImg" src="" alt="">
         <button class="prev-btn">◀</button>
         <button class="next-btn">▶</button>
       </div>
@@ -88,113 +51,63 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
   </div>
 </div>
 
-<!-- ------------------ 購物車 ------------------ -->
-<div class="cart-sidebar" id="cartSidebar">
-  <div class="cart-header">
-    <h2>購物車</h2>
-    <i class="fas fa-times close-cart" id="closeCart"></i>
-  </div>
-  <button class="checkout-btn" id="checkoutBtn">結帳</button>
-  <div class="cart-total">總計: <span id="cartTotal">$0</span></div>
-  <div class="cart-items" id="cartItems"></div>
-</div>
-
-<!-- ------------------ Modals ------------------ -->
-<div class="modal" id="aboutModal">
-  <div class="modal-content">
-    <span class="modal-close" onclick="closeModal('aboutModal')">&times;</span>
-    <h2>公司簡介</h2>
-    <p>這是貓貓燈具的公司簡介範例文字，介紹品牌與理念。</p>
-  </div>
-</div>
-
-<div class="modal" id="memberModal">
-  <div class="modal-content">
-    <span class="modal-close" onclick="closeModal('memberModal')">&times;</span>
-    <h2>會員登入/註冊</h2>
-    <p>這裡可以放登入或註冊表單的內容範例。</p>
-  </div>
-</div>
-
-<div class="modal" id="serviceModal">
-  <div class="modal-content">
-    <span class="modal-close" onclick="closeModal('serviceModal')">&times;</span>
-    <h2>客服</h2>
-    <p>這裡顯示客服資訊，例如電話、Email 或線上客服連結。</p>
-  </div>
-</div>
-
 <script>
+// ------------------ 取得商品ID ------------------
 const urlParams = new URLSearchParams(window.location.search);
 const productId = parseInt(urlParams.get('id'));
 
-// 購物車
-let cart = JSON.parse(localStorage.getItem('catlamp_cart')||'[]');
-function saveCart(){ localStorage.setItem('catlamp_cart', JSON.stringify(cart)); updateCartButton(); }
-function updateCartButton(){ const count = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartCount').textContent=count; }
-function openCart(){ document.getElementById('cartSidebar').classList.add('open'); renderCart(); }
-function renderCart(){
-  const itemsEl = document.getElementById('cartItems');
-  itemsEl.innerHTML='';
-  let total=0;
-  cart.forEach(item=>{ total+=item.price*item.qty; const div=document.createElement('div'); div.className='cart-item'; div.innerHTML=`<span>${item.name} x ${item.qty}</span><span>$${item.price*item.qty}</span>`; itemsEl.appendChild(div); });
-  document.getElementById('cartTotal').textContent='$'+total;
+// ------------------ 載入商品資料 ------------------
+let products = [
+  {id:1,name:"現代吊燈A",category:"吊燈",price:2500,imgs:["https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=吊燈A"],desc:"適合客廳使用"},
+  {id:2,name:"復古壁燈B",category:"壁燈",price:1200,imgs:["https://via.placeholder.com/300x300/45B7D1/FFFFFF?text=壁燈B"],desc:"適合走廊"},
+  {id:3,name:"簡約桌燈C",category:"桌燈",price:800,imgs:["https://via.placeholder.com/300x300/FFD93D/FFFFFF?text=桌燈C"],desc:"適合書房"}
+];
+
+const product = products.find(p=>p.id===productId);
+if(!product){document.body.innerHTML="<div class='container'><p>商品不存在</p></div>";}
+else{
+  document.getElementById('detailName').textContent=product.name;
+  document.getElementById('detailCategory').textContent=product.category;
+  document.getElementById('detailPrice').textContent=`$${product.price}`;
+  document.getElementById('detailDesc').textContent=product.desc;
+
+  let currentIndex=0;
+  const mainImg=document.getElementById('mainImg');
+  const thumbnails=document.getElementById('thumbnails');
+
+  function showImage(index){
+    mainImg.src=product.imgs[index];
+    thumbnails.querySelectorAll('img').forEach((t,i)=>t.classList.toggle('active',i===index));
+  }
+
+  product.imgs.forEach((img,i)=>{
+    const thumb=document.createElement('img');
+    thumb.src=img;
+    thumb.onclick=()=>{currentIndex=i; showImage(i);}
+    if(i===0) thumb.classList.add('active');
+    thumbnails.appendChild(thumb);
+  });
+
+  showImage(0);
+
+  document.querySelector('.prev-btn').onclick=()=>{
+    currentIndex=(currentIndex-1+product.imgs.length)%product.imgs.length; showImage(currentIndex);
+  };
+  document.querySelector('.next-btn').onclick=()=>{
+    currentIndex=(currentIndex+1)%product.imgs.length; showImage(currentIndex);
+  };
+
+  // ------------------ 加入購物車 ------------------
+  document.getElementById('addToCartBtn').onclick=()=>{
+    let cart=JSON.parse(localStorage.getItem('catlamp_cart')||'[]');
+    if(!cart) cart=[];
+    const exist=cart.find(x=>x.id===product.id);
+    if(exist) exist.qty++;
+    else cart.push({...product,qty:1});
+    localStorage.setItem('catlamp_cart',JSON.stringify(cart));
+    alert('已加入購物車！');
+  };
 }
-
-// header modal
-function openModal(id){document.getElementById(id).style.display='flex';}
-function closeModal(id){document.getElementById(id).style.display='none';}
-['aboutLink','memberToggleBtn','serviceBtn'].forEach(id=>{
-  document.getElementById(id).onclick=()=>openModal(id==='aboutLink'?'aboutModal':id==='memberToggleBtn'?'memberModal':'serviceModal');
-});
-// 點擊背景也關閉 modal
-document.querySelectorAll('.modal').forEach(modal=>{
-  modal.onclick=(e)=>{if(e.target===modal) modal.style.display='none';};
-});
-
-// 購物車開關
-document.getElementById('cartIcon').onclick=()=>openCart();
-document.getElementById('closeCart').onclick=()=>document.getElementById('cartSidebar').classList.remove('open');
-
-// 載入產品
-fetch('products.json')
-  .then(res=>res.json())
-  .then(products=>{
-    const product = products.find(p=>p.id===productId);
-    if(!product){document.body.innerHTML='<div class="container"><p>商品不存在</p></div>';return;}
-
-    document.getElementById('detailName').textContent=product.name;
-    document.getElementById('detailCategory').textContent=product.category;
-    document.getElementById('detailPrice').textContent=`$${product.price}`;
-    document.getElementById('detailDesc').textContent=product.desc;
-
-    let currentIndex=0;
-    const mainImg=document.getElementById('mainImg');
-    const thumbnails=document.getElementById('thumbnails');
-    function showImage(index){
-      mainImg.src=product.imgs[index];
-      thumbnails.querySelectorAll('img').forEach((t,i)=>t.classList.toggle('active',i===index));
-    }
-    product.imgs.forEach((img,i)=>{
-      const thumb=document.createElement('img'); thumb.src=img;
-      thumb.onclick=()=>{currentIndex=i; showImage(i);};
-      if(i===0) thumb.classList.add('active');
-      thumbnails.appendChild(thumb);
-    });
-    showImage(0);
-
-    document.querySelector('.prev-btn').onclick=()=>{currentIndex=(currentIndex-1+product.imgs.length)%product.imgs.length; showImage(currentIndex);}
-    document.querySelector('.next-btn').onclick=()=>{currentIndex=(currentIndex+1)%product.imgs.length; showImage(currentIndex);}
-
-    document.getElementById('addToCartBtn').onclick=()=>{
-      const exist=cart.find(x=>x.id===product.id);
-      if(exist) exist.qty++; else cart.push({...product, qty:1});
-      saveCart(); alert('已加入購物車！');
-    };
-
-    updateCartButton(); renderCart();
-  })
-  .catch(err=>{console.error(err); document.body.innerHTML='<div class="container"><p>載入失敗</p></div>';});
 </script>
 
 </body>
