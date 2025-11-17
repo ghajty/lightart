@@ -1,5 +1,0 @@
-[
-  {"id":1,"name":"現代吊燈A","category":"吊燈","price":2500,"imgs":["https://via.placeholder.com/300x300/FF6B6B/FFFFFF?text=吊燈A"],"desc":"適合客廳"},
-  {"id":2,"name":"復古壁燈B","category":"壁燈","price":1200,"imgs":["https://via.placeholder.com/300x300/45B7D1/FFFFFF?text=壁燈B"],"desc":"適合走廊"},
-  {"id":3,"name":"時尚桌燈C","category":"桌燈","price":800,"imgs":["https://via.placeholder.com/300x300/FFD93D/FFFFFF?text=桌燈C"],"desc":"適合書房"}
-]
