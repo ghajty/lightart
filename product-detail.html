@@ -33,7 +33,7 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
 .add-to-cart:hover {background:#555;}
 @media (max-width:768px) {.content {grid-template-columns:1fr;} .main-img-container {max-width:100%;}}
 
-/* ------------------ 購物車側欄 ------------------ */
+/* ------------------ 購物車 ------------------ */
 .cart-sidebar {position:fixed; top:0; right:0; width:320px; max-width:100%; background:#fff; box-shadow:-2px 0 6px rgba(0,0,0,0.2); padding:20px; height:auto; max-height:100vh; display:flex; flex-direction:column; transform:translateX(100%); transition:0.3s; z-index:999;}
 .cart-sidebar.open {transform:translateX(0);}
 .cart-header {display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
@@ -42,6 +42,12 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
 .cart-total {font-size:18px; margin-bottom:15px;}
 .cart-items {overflow-y:auto; flex-grow:1;}
 .cart-item {display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #ddd;}
+
+/* ------------------ Modal ------------------ */
+.modal {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:1000;}
+.modal-content {background:#fff; padding:20px; border-radius:8px; max-width:400px; width:90%; position:relative;}
+.modal-content h2 {margin-top:0;}
+.modal-close {position:absolute; top:10px; right:15px; cursor:pointer; font-size:1.2em; font-weight:bold;}
 </style>
 </head>
 <body>
@@ -93,40 +99,62 @@ header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-co
   <div class="cart-items" id="cartItems"></div>
 </div>
 
+<!-- ------------------ Modals ------------------ -->
+<div class="modal" id="aboutModal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeModal('aboutModal')">&times;</span>
+    <h2>公司簡介</h2>
+    <p>這是貓貓燈具的公司簡介範例文字，介紹品牌與理念。</p>
+  </div>
+</div>
+
+<div class="modal" id="memberModal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeModal('memberModal')">&times;</span>
+    <h2>會員登入/註冊</h2>
+    <p>這裡可以放登入或註冊表單的內容範例。</p>
+  </div>
+</div>
+
+<div class="modal" id="serviceModal">
+  <div class="modal-content">
+    <span class="modal-close" onclick="closeModal('serviceModal')">&times;</span>
+    <h2>客服</h2>
+    <p>這裡顯示客服資訊，例如電話、Email 或線上客服連結。</p>
+  </div>
+</div>
+
 <script>
 const urlParams = new URLSearchParams(window.location.search);
 const productId = parseInt(urlParams.get('id'));
 
-// 購物車初始
+// 購物車
 let cart = JSON.parse(localStorage.getItem('catlamp_cart')||'[]');
 function saveCart(){ localStorage.setItem('catlamp_cart', JSON.stringify(cart)); updateCartButton(); }
-function updateCartButton(){
-  const count = cart.reduce((s,i)=>s+i.qty,0);
-  document.getElementById('cartCount').textContent = count;
-}
+function updateCartButton(){ const count = cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartCount').textContent=count; }
 function openCart(){ document.getElementById('cartSidebar').classList.add('open'); renderCart(); }
 function renderCart(){
   const itemsEl = document.getElementById('cartItems');
-  itemsEl.innerHTML = '';
-  let total = 0;
-  cart.forEach(item=>{
-    total += item.price*item.qty;
-    const div = document.createElement('div');
-    div.className='cart-item';
-    div.innerHTML=`<span>${item.name} x ${item.qty}</span><span>$${item.price*item.qty}</span>`;
-    itemsEl.appendChild(div);
-  });
+  itemsEl.innerHTML='';
+  let total=0;
+  cart.forEach(item=>{ total+=item.price*item.qty; const div=document.createElement('div'); div.className='cart-item'; div.innerHTML=`<span>${item.name} x ${item.qty}</span><span>$${item.price*item.qty}</span>`; itemsEl.appendChild(div); });
   document.getElementById('cartTotal').textContent='$'+total;
 }
 
-// header 按鈕
-document.getElementById('aboutLink').onclick = () => alert('公司簡介示範');
-document.getElementById('memberToggleBtn').onclick = () => alert('會員登入/註冊示範');
-document.getElementById('serviceBtn').onclick = () => alert('客服示範');
+// header modal
+function openModal(id){document.getElementById(id).style.display='flex';}
+function closeModal(id){document.getElementById(id).style.display='none';}
+['aboutLink','memberToggleBtn','serviceBtn'].forEach(id=>{
+  document.getElementById(id).onclick=()=>openModal(id==='aboutLink'?'aboutModal':id==='memberToggleBtn'?'memberModal':'serviceModal');
+});
+// 點擊背景也關閉 modal
+document.querySelectorAll('.modal').forEach(modal=>{
+  modal.onclick=(e)=>{if(e.target===modal) modal.style.display='none';};
+});
 
 // 購物車開關
-document.getElementById('cartIcon').onclick = ()=>openCart();
-document.getElementById('closeCart').onclick = ()=>document.getElementById('cartSidebar').classList.remove('open');
+document.getElementById('cartIcon').onclick=()=>openCart();
+document.getElementById('closeCart').onclick=()=>document.getElementById('cartSidebar').classList.remove('open');
 
 // 載入產品
 fetch('products.json')
@@ -135,12 +163,11 @@ fetch('products.json')
     const product = products.find(p=>p.id===productId);
     if(!product){document.body.innerHTML='<div class="container"><p>商品不存在</p></div>';return;}
 
-    document.getElementById('detailName').textContent = product.name;
-    document.getElementById('detailCategory').textContent = product.category;
-    document.getElementById('detailPrice').textContent = `$${product.price}`;
-    document.getElementById('detailDesc').textContent = product.desc;
+    document.getElementById('detailName').textContent=product.name;
+    document.getElementById('detailCategory').textContent=product.category;
+    document.getElementById('detailPrice').textContent=`$${product.price}`;
+    document.getElementById('detailDesc').textContent=product.desc;
 
-    // 圖片切換
     let currentIndex=0;
     const mainImg=document.getElementById('mainImg');
     const thumbnails=document.getElementById('thumbnails');
@@ -149,8 +176,7 @@ fetch('products.json')
       thumbnails.querySelectorAll('img').forEach((t,i)=>t.classList.toggle('active',i===index));
     }
     product.imgs.forEach((img,i)=>{
-      const thumb=document.createElement('img');
-      thumb.src=img;
+      const thumb=document.createElement('img'); thumb.src=img;
       thumb.onclick=()=>{currentIndex=i; showImage(i);};
       if(i===0) thumb.classList.add('active');
       thumbnails.appendChild(thumb);
@@ -166,8 +192,7 @@ fetch('products.json')
       saveCart(); alert('已加入購物車！');
     };
 
-    updateCartButton();
-    renderCart();
+    updateCartButton(); renderCart();
   })
   .catch(err=>{console.error(err); document.body.innerHTML='<div class="container"><p>載入失敗</p></div>';});
 </script>
