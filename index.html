@@ -170,9 +170,30 @@ header {
 
 <script>
 /* ------------------ 載入外部商品資料 ------------------ */
-// 商品資料將從外部檔案匯入
+// 從外部檔案 products.js 讀取商品資料 (需與此檔案同目錄)
+// <script src="products.js"></script> 必須放在本檔案上方
+// 假設外部檔案會提供全域變數 products
 
-/* ------------------ 購物車功能 ------------------ */
+/* ------------------ 商品渲染 ------------------ */
+const productList = document.getElementById("productList");
+
+if (typeof products !== "undefined" && Array.isArray(products)) {
+  products.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.innerHTML = `
+      <img src="${p.img}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>$${p.price}</p>
+      <button class="add-cart-btn" onclick="addToCart(${p.id})">加入購物車</button>
+    `;
+    productList.appendChild(card);
+  });
+} else {
+  productList.innerHTML = "商品資料載入失敗，請確認 products.js 格式是否正確";
+}
+
+/* ------------------ 購物車功能 ------------------ */ ------------------ */
 let cart = [];
 
 function addToCart(id) {
