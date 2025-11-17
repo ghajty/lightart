@@ -1,34 +1,43 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>貓貓燈具</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-<script src="products.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>貓貓燈具 - 精選燈飾</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 <style>
-body { margin: 0; font-family: Arial, sans-serif; background: #f5f5f5; }
-header { background: #333; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-.left-nav { display: flex; align-items: center; gap: 20px; }
-.nav-links a { color: white; margin-left: 15px; cursor: pointer; text-decoration: none; }
-.cart-icon { position: relative; cursor: pointer; }
-.cart-count { position: absolute; top: -8px; right: -8px; background: red; color: white; padding: 2px 6px; border-radius: 50%; font-size: 12px; }
-.product-container { display: flex; flex-wrap: wrap; justify-content: center; padding: 20px; gap: 20px; }
-.product-card { background: white; padding: 15px; width: 200px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); text-align: center; }
-.product-card img { width: 60%; margin: 10px 0; }
-@media (max-width: 768px) { .product-card img { width: 70%; } }
-.add-cart-btn { background: #333; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px; margin-top: 10px; }
-.cart-sidebar { position: fixed; top: 0; right: 0; width: 320px; max-width: 100%; background: #fff; box-shadow: -2px 0 6px rgba(0,0,0,0.2); padding: 20px; max-height: 100vh; display: flex; flex-direction: column; transform: translateX(100%); transition: 0.3s; z-index: 999; }
-.cart-sidebar.open { transform: translateX(0); }
-.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.close-cart { cursor: pointer; }
-.checkout-btn { background: #000; color: #fff; border: none; padding: 12px; width: 100%; cursor: pointer; margin-bottom: 15px; }
-.cart-total { font-size: 18px; margin-bottom: 15px; }
-.cart-items { overflow-y: auto; flex-grow: 1; }
-.cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #ddd; }
+/* ---------------- 基本樣式 ---------------- */
+body {margin:0; font-family:Arial,sans-serif; background:#f5f5f5;}
+header {background:#333; color:#fff; padding:10px 20px; display:flex; justify-content:space-between; align-items:center;}
+.left-nav {display:flex; align-items:center; gap:20px;}
+.nav-links a {color:#fff; margin-left:15px; cursor:pointer; text-decoration:none;}
+.cart-icon {position:relative; cursor:pointer;}
+.cart-count {position:absolute; top:-8px; right:-8px; background:red; color:#fff; padding:2px 6px; border-radius:50%; font-size:12px; display:flex; justify-content:center; align-items:center;}
+/* ---------------- 分類 ---------------- */
+#categoryList {text-align:center; margin:20px 0;}
+#categoryList button {margin:0 5px 10px 5px; padding:6px 14px; border:none; border-radius:20px; background:#eee; cursor:pointer;}
+#categoryList button.active, #categoryList button:hover {background:#333; color:#fff;}
+/* ---------------- 商品卡片 ---------------- */
+.product-container {display:flex; flex-wrap:wrap; justify-content:center; padding:20px; gap:20px;}
+.product-card {background:#fff; padding:15px; width:220px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); text-align:center; cursor:pointer; transition:transform 0.2s;}
+.product-card:hover {transform:translateY(-3px);}
+.product-card img {width:70%; aspect-ratio:1/1; object-fit:cover; border-radius:8px; margin:0 auto 10px;}
+.add-btn {background:#333; color:#fff; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; margin-top:10px;}
+.add-btn:hover {background:#555;}
+/* ---------------- 購物車 ---------------- */
+.cart-sidebar {position:fixed; top:0; right:0; width:350px; max-width:100%; background:#fff; box-shadow:-2px 0 6px rgba(0,0,0,0.2); padding:20px; height:auto; max-height:100vh; display:flex; flex-direction:column; transform:translateX(100%); transition:0.3s; z-index:999;}
+.cart-sidebar.open {transform:translateX(0);}
+.cart-header {display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+.close-cart {cursor:pointer;}
+.checkout-btn {background:#000; color:#fff; border:none; padding:12px; width:100%; cursor:pointer; margin-bottom:15px; border-radius:6px;}
+.cart-total {font-size:18px; margin-bottom:15px;}
+.cart-items {overflow-y:auto; flex-grow:1;}
+.cart-item {display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #ddd;}
+@media (max-width:768px){.product-card{width:45%;}}
 </style>
 </head>
 <body>
+
 <header>
   <div class="left-nav">
     <h1>貓貓燈具</h1>
@@ -42,7 +51,11 @@ header { background: #333; color: #fff; padding: 10px 20px; display: flex; justi
     <span class="cart-count" id="cartCount">0</span>
   </div>
 </header>
+
+<div id="categoryList"></div>
 <div class="product-container" id="productList"></div>
+
+<!-- 購物車側欄 -->
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
     <h2>購物車</h2>
@@ -52,47 +65,68 @@ header { background: #333; color: #fff; padding: 10px 20px; display: flex; justi
   <div class="cart-total">總計: <span id="cartTotal">$0</span></div>
   <div class="cart-items" id="cartItems"></div>
 </div>
+
+<script src="load-products.js"></script>
 <script>
-const productList = document.getElementById("productList");
-if (typeof products !== "undefined" && Array.isArray(products)) {
-  products.forEach(p => {
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.innerHTML = `
-      <img src="${p.img}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p>$${p.price}</p>
-      <button class="add-cart-btn" onclick="addToCart(${p.id})">加入購物車</button>`;
-    productList.appendChild(card);
-  });
-} else { productList.innerHTML = "商品資料載入失敗，請確認 products.js"; }
-let cart = [];
-function addToCart(id) {
-  const item = products.find(p => p.id === id);
-  if (!item) return;
-  cart.push(item);
-  updateCart();
+let cart = JSON.parse(localStorage.getItem('catlamp_cart')||'[]');
+
+function saveCart(){
+  localStorage.setItem('catlamp_cart', JSON.stringify(cart));
 }
-function updateCart() {
-  document.getElementById("cartCount").textContent = cart.length;
-  const cartItems = document.getElementById("cartItems");
-  cartItems.innerHTML = "";
+
+function updateCartButton(){
+  const count = cart.reduce((s,i)=>s+(i.qty||1),0);
+  const el = document.getElementById('cartCount');
+  el.textContent = count;
+  el.style.display = count>0?'flex':'none';
+}
+
+function openCart(){
+  document.getElementById('cartSidebar').classList.add('open');
+}
+
+function renderCart(){
+  const itemsEl = document.getElementById('cartItems');
+  itemsEl.innerHTML='';
   let total = 0;
-  cart.forEach(item => {
-    total += item.price;
-    const div = document.createElement("div");
-    div.className = "cart-item";
-    div.innerHTML = `<span>${item.name}</span><span>$${item.price}</span>`;
-    cartItems.appendChild(div);
+  cart.forEach(item=>{
+    total += item.price * (item.qty||1);
+    const div = document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`<span>${item.name}</span><span>$${item.price} x ${item.qty||1}</span>`;
+    itemsEl.appendChild(div);
   });
-  document.getElementById("cartTotal").textContent = `$${total}`;
+  document.getElementById('cartTotal').textContent=`$${total}`;
 }
-document.getElementById("cartIcon").onclick = () => {
-  document.getElementById("cartSidebar").classList.add("open");
+
+window.addToCart = function(id){
+  const p = window.products.find(x=>x.id===id);
+  if(!p) return;
+  const exist = cart.find(x=>x.id===id);
+  if(exist) exist.qty = (exist.qty||1)+1;
+  else cart.push({...p, qty:1});
+  saveCart();
+  updateCartButton();
+  renderCart();
 };
-document.getElementById("closeCart").onclick = () => {
-  document.getElementById("cartSidebar").classList.remove("open");
+
+updateCartButton();
+renderCart();
+
+/* 側邊欄控制 */
+document.getElementById('cartIcon').onclick=()=>document.getElementById('cartSidebar').classList.add('open');
+document.getElementById('closeCart').onclick=()=>document.getElementById('cartSidebar').classList.remove('open');
+
+/* 結帳 */
+document.getElementById('checkoutBtn').onclick=()=>{
+  if(cart.length===0) return alert('購物車是空的！');
+  alert(`訂單總額 $${cart.reduce((s,i)=>s+i.price*(i.qty||1),0)}\n感謝購買！`);
+  cart=[];
+  saveCart();
+  updateCartButton();
+  renderCart();
 };
 </script>
+
 </body>
 </html>
