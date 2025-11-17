@@ -1,118 +1,31 @@
-// ------------------ 全局資料 ------------------
-let currentUser = JSON.parse(localStorage.getItem('catlamp_user')||'null');
-let productsFiltered = [];
+// 範例 Banner
+const banners=[{img:'https://via.placeholder.com/800x200?text=Banner1'},{img:'https://via.placeholder.com/800x200?text=Banner2'}];
+// 範例商品
+let products=[
+{id:1,name:'吊燈A',category:'吊燈',price:2500,imgs:['https://via.placeholder.com/300x300/FF6B6B?text=吊燈A'],desc:'適合客廳',stock:10,likes:0,reviews:[]},
+{id:2,name:'壁燈B',category:'壁燈',price:1200,imgs:['https://via.placeholder.com/300x300/45B7D1?text=壁燈B'],desc:'適合走廊',stock:5,likes:0,reviews:[]},
+{id:3,name:'吊燈C',category:'吊燈',price:3000,imgs:['https://via.placeholder.com/300x300/FFD93D?text=吊燈C'],desc:'適合餐廳',stock:8,likes:0,reviews:[]}
+];
+let cart=JSON.parse(localStorage.getItem('catlamp_cart')||'[]');
+let currentUser=JSON.parse(localStorage.getItem('catlamp_user')||'null');
 
-function saveCart(){localStorage.setItem('catlamp_cart',JSON.stringify(cart));}
-function saveUser(){localStorage.setItem('catlamp_user',JSON.stringify(currentUser));}
-
-// ------------------ 顯示 Banner ------------------
+// ------------------ Banner ------------------
 function renderBanner(){
-  const container=document.getElementById('bannerContainer');
-  if(!container)return;
-  container.innerHTML='';
-  banners.forEach(b=>{
-    const img=document.createElement('img');
-    img.src=b.img;
-    img.style.width='100%';
-    container.appendChild(img);
-  });
+  const container=document.getElementById('bannerContainer'); container.innerHTML='';
+  banners.forEach(b=>{const img=document.createElement('img');img.src=b.img;img.style.width='100%';container.appendChild(img);});
 }
 
-// ------------------ 商品列表 ------------------
-function renderProducts(filter='全部',sortBy=''){
-  const list=document.getElementById('productList');
-  if(!list)return;
-  let filtered = filter==='全部'?products:products.filter(p=>p.category===filter);
-  if(sortBy==='price-asc') filtered.sort((a,b)=>a.price-b.price);
-  if(sortBy==='price-desc') filtered.sort((a,b)=>b.price-a.price);
-  if(sortBy==='newest') filtered.sort((a,b)=>b.id-b.id);
-  productsFiltered = filtered;
-  list.innerHTML='';
-  filtered.forEach(p=>{
-    const card=document.createElement('div');
-    card.className='product-card';
-    card.innerHTML=`
-      <img src="${p.imgs[0]}" alt="${p.name}" style="width:100%">
-      <h3>${p.name}</h3>
-      <p>$${p.price}</p>
-      <button class="add-btn" data-id="${p.id}">加入購物車</button>
-      <button class="like-btn" data-id="${p.id}">❤ ${p.likes||0}</button>
-    `;
-    card.onclick=(e)=>{
-      if(e.target.classList.contains('add-btn')||e.target.classList.contains('like-btn'))return;
-      window.location.href=`product-detail.html?id=${p.id}`;
-    };
-    card.querySelector('.add-btn').onclick=(e)=>{
-      e.stopPropagation(); addToCart(p.id);
-    };
-    card.querySelector('.like-btn').onclick=(e)=>{
-      e.stopPropagation(); toggleLike(p.id, e.target);
-    };
-    list.appendChild(card);
-  });
-}
-
-// ------------------ 收藏/喜歡 ------------------
-function toggleLike(id, btn){
-  if(!currentUser){alert('請先登入'); return;}
-  const p = products.find(x=>x.id===id);
-  if(!p) return;
-  p.likes = (p.likes||0)+1;
-  btn.textContent = `❤ ${p.likes}`;
-}
-
-// ------------------ 購物車 ------------------
-function addToCart(id){
-  const p = products.find(x=>x.id===id);
-  if(!p||p.stock<1){alert('庫存不足');return;}
-  const exist = cart.find(x=>x.id===id);
-  if(exist) exist.qty++; else cart.push({...p, qty:1});
-  saveCart(); updateCart();
-}
-
-function updateCart(){
-  const count=document.getElementById('cartCount');
-  if(count) count.textContent=cart.reduce((a,b)=>a+b.qty,0);
-  const sidebar=document.getElementById('cartSidebar');
-  if(!sidebar) return;
-  const items=document.getElementById('cartItems'); items.innerHTML='';
-  let total=0;
-  cart.forEach(it=>{
-    total+=it.price*it.qty;
-    const div=document.createElement('div');
-    div.className='cart-item';
-    div.innerHTML=`${it.name} x${it.qty} - $${it.price*it.qty}`;
-    items.appendChild(div);
-  });
-  document.getElementById('cartTotal').textContent=`$${total}`;
-}
-
-document.getElementById('cartIcon')?.addEventListener('click',()=>document.getElementById('cartSidebar').style.display='flex');
-document.getElementById('closeCart')?.addEventListener('click',()=>document.getElementById('cartSidebar').style.display='none');
-document.getElementById('checkoutBtn')?.addEventListener('click',()=>{
-  if(!currentUser){alert('請先登入');return;}
-  if(cart.length===0){alert('購物車為空');return;}
-  alert('結帳成功！'); cart=[]; saveCart(); updateCart();
-});
-
-// ------------------ 篩選與排序 ------------------
-function renderCategories(){
-  const container=document.getElementById('categoryList');
-  if(!container) return;
-  const cats=new Set(products.map(p=>p.category)); cats.add('全部');
-  container.innerHTML='';
-  Array.from(cats).sort().forEach(c=>{
-    const btn=document.createElement('button');
-    btn.textContent=c;
-    btn.onclick=()=>renderProducts(c);
-    container.appendChild(btn);
-  });
-}
+// ------------------ 彈窗 ------------------
+document.getElementById('aboutBtn').onclick=()=>document.getElementById('aboutModal').style.display='block';
+document.getElementById('closeAbout').onclick=()=>document.getElementById('aboutModal').style.display='none';
+document.getElementById('contactBtn').onclick=()=>document.getElementById('contactModal').style.display='block';
+document.getElementById('closeContact').onclick=()=>document.getElementById('contactModal').style.display='none';
+document.getElementById('contactForm').onsubmit=(e)=>{
+  e.preventDefault(); alert('訊息已送出！'); document.getElementById('contactModal').style.display='none';
+};
 
 // ------------------ 初始化 ------------------
 document.addEventListener('DOMContentLoaded',()=>{
-  renderBanner();
-  renderCategories();
-  renderProducts();
-  updateCart();
+  renderBanner(); renderCategories(); renderProducts(); updateCart();
+  document.getElementById('sortSelect').onchange=()=>renderProducts('全部',document.getElementById('sortSelect').value);
 });
